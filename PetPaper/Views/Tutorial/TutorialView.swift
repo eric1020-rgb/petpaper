@@ -11,6 +11,7 @@ struct TutorialView: View {
         VStack(spacing: 0) {
             HStack {
                 Button(String(localized: "tutorial.skip")) {
+                    AppHaptics.light()
                     session.skipTutorial()
                 }
                 .foregroundStyle(AppTheme.muted)
@@ -41,6 +42,7 @@ struct TutorialView: View {
                 }
                 Button(step == 4 ? String(localized: "tutorial.start") : String(localized: "tutorial.next")) {
                     if step == 4 {
+                        AppHaptics.light()
                         session.finishTutorial(template: template, petID: petID)
                     } else {
                         withAnimation { step += 1 }

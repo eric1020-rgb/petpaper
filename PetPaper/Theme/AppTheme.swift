@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 enum AppTheme {
     static let coral = Color(red: 1.0, green: 0.45, blue: 0.42)
@@ -19,4 +20,10 @@ enum AppTheme {
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
+}
+
+enum AppHaptics {
+    static func light() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
 }
