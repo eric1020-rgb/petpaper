@@ -1,0 +1,37 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+timeline.xctimeline
+playground.xcworkspace
+
+# Swift / SPM
+.build/
+.swiftpm/
+Package.resolved
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Editor
+*.swp
+*~
+.idea/
+.vscode/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
