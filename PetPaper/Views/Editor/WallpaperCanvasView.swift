@@ -60,9 +60,7 @@ struct WallpaperCanvasView: View {
 
     private func trailLayer(in size: CGSize, layoutScale: CGFloat) -> some View {
         Group {
-            if store.pawTrail.isEmpty {
-                Color.clear
-            } else {
+            if store.state.followMode, store.state.pawTrailEnabled, !store.pawTrail.isEmpty {
                 TimelineView(.periodic(from: .now, by: 0.05)) { timeline in
                     let now = timeline.date
                     ZStack {
@@ -78,7 +76,12 @@ struct WallpaperCanvasView: View {
                                 )
                         }
                     }
+                    .onChange(of: timeline.date) { _, date in
+                        store.pruneTrail(now: date)
+                    }
                 }
+            } else {
+                Color.clear
             }
         }
         .allowsHitTesting(false)

@@ -54,6 +54,11 @@ struct TutorialView: View {
             .padding(20)
         }
         .background(AppTheme.backgroundGradient.ignoresSafeArea())
+        .onAppear {
+            template = session.lastTemplate
+            petID = session.lastPetID
+            demoStore.load(template: template, petID: petID)
+        }
         .onChange(of: step) { _, value in
             if value == 3 {
                 demoStore.load(template: template, petID: petID)

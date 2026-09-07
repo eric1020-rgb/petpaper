@@ -6,10 +6,21 @@ import CoreImage.CIFilterBuiltins
 enum ImageProcessing {
     private static let ciContext = CIContext(options: [.useSoftwareRenderer: false])
 
-    /// Decodes picker bytes (JPEG / PNG / HEIC) via UIImage, then ImageIO.
+    /// Longest edge for picker decode, Vision, and stored `PhotoPetCutout.original`.
+    /// Wallpaper export is 1290×2796; the pet is typically ~700px and at most ~1800px.
+    static let workingMaxDimension: CGFloat = 1920
+
+    /// Longest edge for the lifted cutout kept in memory after confirm.
+    static let storedCutoutMaxDimension: CGFloat = 1920
+
+    /// Decodes picker bytes (JPEG / PNG / HEIC) via ImageIO thumbnails so 48MP / panos
+    /// never land in RAM at full size. Falls back to `UIImage(data:)` + constrain.
     static func uiImage(fromPhotoData data: Data) -> UIImage? {
+        if let downsampled = downsampled(from: data, maxPixelSize: workingMaxDimension) {
+            return downsampled
+        }
         if let image = UIImage(data: data) {
-            return image
+            return preparedForImport(image)
         }
         let options: [CFString: Any] = [
             kCGImageSourceShouldCache: false,
@@ -21,7 +32,28 @@ enum ImageProcessing {
             return nil
         }
         let orientation = imageOrientation(from: source)
-        return UIImage(cgImage: cgImage, scale: 1, orientation: orientation)
+        return preparedForImport(UIImage(cgImage: cgImage, scale: 1, orientation: orientation))
+    }
+
+    /// Thumbnail decode that applies EXIF orientation (`CreateThumbnailWithTransform`).
+    static func downsampled(from data: Data, maxPixelSize: CGFloat) -> UIImage? {
+        let sourceOptions: [CFString: Any] = [
+            kCGImageSourceShouldCache: false
+        ]
+        guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions as CFDictionary),
+              CGImageSourceGetCount(source) > 0 else {
+            return nil
+        }
+        let thumbOptions: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceShouldCacheImmediately: true,
+            kCGImageSourceThumbnailMaxPixelSize: Int(maxPixelSize)
+        ]
+        guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, thumbOptions as CFDictionary) else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage, scale: 1, orientation: .up)
     }
 
     private static func imageOrientation(from source: CGImageSource) -> UIImage.Orientation {
@@ -44,27 +76,52 @@ enum ImageProcessing {
     }
 
     static func normalized(_ image: UIImage) -> UIImage {
-        if image.imageOrientation == .up { return image }
+        let pixelSize = orientedPixelSize(of: image)
+        if image.imageOrientation == .up, abs(image.scale - 1) < 0.01 {
+            return image
+        }
         let format = UIGraphicsImageRendererFormat.default()
         format.scale = 1
         format.opaque = false
-        let size = image.size
-        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
-            image.draw(in: CGRect(origin: .zero, size: size))
+        return UIGraphicsImageRenderer(size: pixelSize, format: format).image { _ in
+            image.draw(in: CGRect(origin: .zero, size: pixelSize))
         }
     }
 
-    static func constrained(_ image: UIImage, maxDimension: CGFloat = 2048) -> UIImage {
-        let longest = max(image.size.width, image.size.height)
+    /// Orientation-fixed and capped for the import / cutout pipeline.
+    static func preparedForImport(_ image: UIImage) -> UIImage {
+        constrained(normalized(image), maxDimension: workingMaxDimension)
+    }
+
+    static func preparedCutout(_ image: UIImage) -> UIImage {
+        constrained(image, maxDimension: storedCutoutMaxDimension)
+    }
+
+    static func constrained(_ image: UIImage, maxDimension: CGFloat = workingMaxDimension) -> UIImage {
+        let pixels = orientedPixelSize(of: image)
+        let longest = max(pixels.width, pixels.height)
         guard longest > maxDimension, longest > 0 else { return image }
         let scale = maxDimension / longest
-        let newSize = CGSize(width: image.size.width * scale, height: image.size.height * scale)
+        let newSize = CGSize(
+            width: max((pixels.width * scale).rounded(.down), 1),
+            height: max((pixels.height * scale).rounded(.down), 1)
+        )
         let format = UIGraphicsImageRendererFormat.default()
         format.scale = 1
         format.opaque = false
         return UIGraphicsImageRenderer(size: newSize, format: format).image { _ in
             image.draw(in: CGRect(origin: .zero, size: newSize))
         }
+    }
+
+    private static func orientedPixelSize(of image: UIImage) -> CGSize {
+        if image.imageOrientation == .up, let cgImage = image.cgImage {
+            return CGSize(width: cgImage.width, height: cgImage.height)
+        }
+        return CGSize(
+            width: max(image.size.width * image.scale, 1),
+            height: max(image.size.height * image.scale, 1)
+        )
     }
 
     static func uiImage(from buffer: CVPixelBuffer) -> UIImage? {

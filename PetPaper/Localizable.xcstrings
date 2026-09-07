@@ -1180,13 +1180,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open Photos, then set it as your Lock Screen or Home Screen wallpaper."
+            "value": "PetPaper can’t set wallpaper for you. In Photos, open the image, tap Share, then Use as Wallpaper — Lock Screen, Home Screen, or both."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "打開「照片」，即可設為鎖定畫面或主畫面壁紙。"
+            "value": "寵物壁紙無法直接幫你設壁紙。請到「照片」打開剛儲存的圖，點分享 → 用作壁紙，再選鎖定畫面、主畫面或兩者。"
           }
         }
       }
@@ -2149,13 +2149,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When on, Follow mode leaves fading paw prints."
+            "value": "When Follow is on, leaves fading paw prints behind the pet."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "開啟後，「跟著走」會留下淡出的爪印。"
+            "value": "在「跟著走」開啟時，寵物移動會留下淡出的爪印。"
           }
         }
       }
@@ -2241,6 +2241,125 @@
           "stringUnit": {
             "state": "translated",
             "value": "調整裁剪框大小"
+          }
+        }
+      }
+    },
+    "home.upload.emptyTip": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No pet photos yet? You can still open the picker — iOS handles an empty library."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未有寵物相都可以打開相簿；相簿係空嘅，系統會自己處理。"
+          }
+        }
+      }
+    },
+    "home.lastUsed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last used"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上次使用"
+          }
+        }
+      }
+    },
+    "import.preview.tipsTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cutout tips"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "去背小提示"
+          }
+        }
+      }
+    },
+    "import.preview.tip.contrast": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A contrasting background helps the cutout stay clean."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "背景同寵物反差大，去背會更乾淨。"
+          }
+        }
+      }
+    },
+    "import.preview.tip.frame": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep the whole pet in frame — head, paws, and tail."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "整隻寵物入鏡，頭、腳同尾巴都要睇到。"
+          }
+        }
+      }
+    },
+    "import.preview.tip.group": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avoid crowded group photos when you only want one pet."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如果只要一隻寵物，避免人多擠擁的合照。"
+          }
+        }
+      }
+    },
+    "a11y.trail.disabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn on Follow first to leave a paw trail."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請先開啟「跟著走」，先可以留下爪印軌跡。"
           }
         }
       }

@@ -3,6 +3,8 @@ import UIKit
 
 struct PhotoPetCutout: Identifiable {
     let id: UUID
+    /// Full-frame import working copy (already downscaled). Kept after confirm so
+    /// refine settings stay meaningful; not used for export drawing.
     let original: UIImage
     var cutout: UIImage
     var instanceIndex: Int
