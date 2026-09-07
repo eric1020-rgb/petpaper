@@ -104,6 +104,9 @@ struct EditorView: View {
         .onChange(of: store.state.petID) { _, petID in
             rememberDraft(petID: petID)
         }
+        .onChange(of: store.state.usesPhotoPet) { _, _ in
+            rememberDraft()
+        }
         .onAppear {
             hueDraft = store.state.hueShift
             rememberDraft()
@@ -236,7 +239,8 @@ struct EditorView: View {
     private func rememberDraft(template: TemplateKind? = nil, petID: String? = nil) {
         session.remember(
             template: template ?? store.state.template,
-            petID: store.state.usesPhotoPet ? nil : (petID ?? store.state.petID)
+            petID: store.state.usesPhotoPet ? nil : (petID ?? store.state.petID),
+            usesPhotoPet: store.state.usesPhotoPet
         )
     }
 

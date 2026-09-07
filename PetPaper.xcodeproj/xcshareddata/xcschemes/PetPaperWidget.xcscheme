@@ -14,23 +14,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "42AEFBAE01D2DFD981F7DA7D"
-               BuildableName = "PetPaper.app"
-               BlueprintName = "PetPaper"
+               BlueprintIdentifier = "C8E1D001A1B2C3D4E5F63001"
+               BuildableName = "PetPaperWidget.appex"
+               BlueprintName = "PetPaperWidget"
                ReferencedContainer = "container:PetPaper.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C8E1D001A1B2C3D4E5F63001"
-               BuildableName = "PetPaperWidget.appex"
-               BlueprintName = "PetPaperWidget"
+               BlueprintIdentifier = "42AEFBAE01D2DFD981F7DA7D"
+               BuildableName = "PetPaper.app"
+               BlueprintName = "PetPaper"
                ReferencedContainer = "container:PetPaper.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -53,16 +53,43 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <RemoteRunnable
+         runnableDebuggingMode = "2"
+         BundleIdentifier = "com.apple.springboard">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "42AEFBAE01D2DFD981F7DA7D"
-            BuildableName = "PetPaper.app"
-            BlueprintName = "PetPaper"
+            BlueprintIdentifier = "C8E1D001A1B2C3D4E5F63001"
+            BuildableName = "PetPaperWidget.appex"
+            BlueprintName = "PetPaperWidget"
             ReferencedContainer = "container:PetPaper.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </RemoteRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "C8E1D001A1B2C3D4E5F63001"
+            BuildableName = "PetPaperWidget.appex"
+            BlueprintName = "PetPaperWidget"
+            ReferencedContainer = "container:PetPaper.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "_XCWidgetKind"
+            value = "DesktopPetWidget"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetDefaultView"
+            value = "timeline"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetFamily"
+            value = "systemSmall"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

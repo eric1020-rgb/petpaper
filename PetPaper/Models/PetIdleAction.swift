@@ -117,6 +117,14 @@ enum IdleInterval: String, CaseIterable, Identifiable {
         default: return 12
         }
     }
+
+    /// WidgetKit coalesces aggressive refreshes. Demo still aims for a short cycle so Simulator QA can see poses.
+    var widgetSeconds: TimeInterval {
+        switch self {
+        case .demo: return 20
+        default: return seconds
+        }
+    }
 }
 
 /// Temporary visual pose. Never written into `EditorState` (export stays the resting pet).
@@ -135,4 +143,111 @@ struct IdlePose: Equatable {
     var sparkleAmount: Double = 0
 
     static let rest = IdlePose()
+}
+
+struct IdlePoseFrame: Equatable {
+    var pose: IdlePose
+    var duration: TimeInterval
+}
+
+extension IdlePose {
+    /// Discrete Home Screen poses. WidgetKit cannot run the in-app animator; it swaps timeline entries instead.
+    static func widgetFrames(for action: PetIdleAction) -> [IdlePoseFrame] {
+        switch action {
+        case .blinkBreathe:
+            return [
+                IdlePoseFrame(pose: IdlePose(eyeClose: 1, bodySquash: 1.08, extraScale: 1.03), duration: 2),
+                IdlePoseFrame(pose: IdlePose(bodySquash: 0.96, extraScale: 0.99), duration: 3)
+            ]
+        case .lookAround:
+            return [
+                IdlePoseFrame(pose: IdlePose(lookOffset: CGSize(width: -5, height: 1), lean: -12), duration: 3),
+                IdlePoseFrame(pose: IdlePose(lookOffset: CGSize(width: 6, height: -1), lean: 12), duration: 3)
+            ]
+        case .earTailFlick:
+            return [
+                IdlePoseFrame(pose: IdlePose(earFlick: 22, tailWag: 28, lean: 6), duration: 2),
+                IdlePoseFrame(pose: IdlePose(earFlick: -18, tailWag: -24, lean: -6), duration: 2)
+            ]
+        case .yawnStretch:
+            return [
+                IdlePoseFrame(
+                    pose: IdlePose(
+                        positionDelta: CGPoint(x: 0, y: -0.04),
+                        extraScale: 1.12,
+                        extraRotation: -8,
+                        eyeClose: 0.4,
+                        bodySquash: 1.1
+                    ),
+                    duration: 4
+                )
+            ]
+        case .bellyRoll:
+            return [
+                IdlePoseFrame(pose: IdlePose(extraRotation: 90, extraScale: 1.05, positionDelta: CGPoint(x: 0.02, y: 0.02)), duration: 2),
+                IdlePoseFrame(pose: IdlePose(extraRotation: 180, extraScale: 1.04, positionDelta: CGPoint(x: 0, y: 0.05)), duration: 3)
+            ]
+        case .scratch:
+            return [
+                IdlePoseFrame(pose: IdlePose(lean: 14, extraRotation: 8, positionDelta: CGPoint(x: 0.02, y: 0.01), earFlick: 12), duration: 2),
+                IdlePoseFrame(pose: IdlePose(lean: -10, extraRotation: -6, positionDelta: CGPoint(x: -0.015, y: 0.01), earFlick: -8), duration: 2)
+            ]
+        case .sleepCurl:
+            return [
+                IdlePoseFrame(
+                    pose: IdlePose(
+                        positionDelta: CGPoint(x: -0.02, y: 0.04),
+                        extraScale: 0.86,
+                        extraRotation: 16,
+                        eyeClose: 1,
+                        bodySquash: 0.9
+                    ),
+                    duration: 5
+                )
+            ]
+        case .zoomies:
+            return [
+                IdlePoseFrame(pose: IdlePose(positionDelta: CGPoint(x: 0.14, y: -0.05), extraRotation: 18, extraScale: 1.08, lean: 12), duration: 2),
+                IdlePoseFrame(pose: IdlePose(positionDelta: CGPoint(x: -0.12, y: 0.06), extraRotation: -16, extraScale: 1.06, lean: -12), duration: 2)
+            ]
+        case .flyOutDoor:
+            return [
+                IdlePoseFrame(
+                    pose: IdlePose(
+                        positionDelta: CGPoint(x: 0.16, y: -0.1),
+                        extraScale: 0.92,
+                        extraRotation: -18,
+                        portalVisible: 1,
+                        sparkleAmount: 0.85
+                    ),
+                    duration: 2
+                ),
+                IdlePoseFrame(
+                    pose: IdlePose(
+                        positionDelta: CGPoint(x: 0.38, y: -0.18),
+                        extraScale: 0.5,
+                        extraRotation: 26,
+                        opacity: 0.2,
+                        portalVisible: 1,
+                        sparkleAmount: 1
+                    ),
+                    duration: 2
+                ),
+                IdlePoseFrame(
+                    pose: IdlePose(opacity: 0, portalVisible: 1, sparkleAmount: 0.9),
+                    duration: 3
+                ),
+                IdlePoseFrame(
+                    pose: IdlePose(
+                        positionDelta: CGPoint(x: -0.22, y: -0.04),
+                        extraScale: 0.88,
+                        extraRotation: -10,
+                        portalVisible: 0.45,
+                        sparkleAmount: 0.5
+                    ),
+                    duration: 2
+                )
+            ]
+        }
+    }
 }

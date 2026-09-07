@@ -4,6 +4,17 @@
 <dict>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>寵物壁紙會將你設計的壁紙存到照片，方便設為鎖定畫面或主畫面。</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.eric1020.petpaper</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>petpaper</string>
+			</array>
+		</dict>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

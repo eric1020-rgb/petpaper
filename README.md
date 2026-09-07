@@ -27,7 +27,7 @@ Code-level first-run QA (this repo cannot run Simulator) lives in **[QA.md](QA.m
 1. 用 Xcode 打開 `PetPaper.xcodeproj`。
 2. 選 iPhone 模擬器，在 Signing 選你的 Team，按 ⌘R 執行。
 3. 首次啟動會進入教學：選模板 → 選寵物 → 拖曳跟著走 → 儲存。主畫面也可「用我嘅相」上傳貓狗照片去背。
-4. 在編輯器點右上角 **儲存**，壁紙會寫入「照片」（1290×2796）。再到 iOS 設成鎖定／主畫面壁紙。
+4. 在編輯器點右上角 **儲存**，壁紙會寫入「照片」（1290×2796）。iOS 主畫面壁紙是靜態的；要讓寵物在桌面動，請加入「桌面寵物」小工具。
 
 ---
 
@@ -39,7 +39,7 @@ The placeholder is `com.eric1020.petpaper`. Change it before App Store submissio
 2. Or edit `PRODUCT_BUNDLE_IDENTIFIER` in `PetPaper.xcodeproj/project.pbxproj`.
 3. Use a reverse-DNS id you own, for example `com.yourname.petpaper`.
 
-Keep it in sync with the App ID you create in [Apple Developer](https://developer.apple.com/account) and App Store Connect.
+Keep it in sync with the App ID you create in [Apple Developer](https://developer.apple.com/account) and App Store Connect. The widget bundle is `com.eric1020.petpaper.widget` and the App Group is `group.com.eric1020.petpaper` — rename those together.
 
 ---
 
@@ -77,18 +77,18 @@ Requires **iOS 17.0+** (already the app’s deployment target) because instance-
 ## Project layout
 
 ```
-PetPaper.xcodeproj          Xcode project + shared scheme
+PetPaper.xcodeproj          Xcode project + shared schemes (app + widget)
 PetPaper/
   PetPaperApp.swift         App entry
-  Info.plist                Photos usage + portrait
+  PetPaper.entitlements     App Group `group.com.eric1020.petpaper`
+  Info.plist                Photos usage + portrait + petpaper:// URL scheme
   Localizable.xcstrings     UI strings (zh-Hant primary, English secondary)
-  InfoPlist.xcstrings       Display name + privacy strings
-  PrivacyInfo.xcprivacy     UserDefaults reason CA92.1
-  Assets.xcassets           App icon + accent
+  Shared/AppGroupStore.swift  Settings + photo-cutout snapshot for the widget
   Models/                   Templates, pets, stickers, editor state, idle actions
   Store/                    AppSession, EditorStore, PetIdleDirector
   Services/                 Photos export, on-device Vision subject lift
   Views/                    Home, editor, photo import, tutorial, idle settings, procedural art
+PetPaperWidget/             Home Screen WidgetKit extension (桌面寵物)
 ```
 
 No CocoaPods, SPM packages, or paid APIs. The MVP does not require an account.
@@ -102,7 +102,7 @@ No CocoaPods, SPM packages, or paid APIs. The MVP does not require an account.
 - **Editor:** colors (hue + accent), stickers (paws, hearts, bowls, balls, yarn, …), short text, place / scale / rotate.
 - **Photo pets:** upload from Photos, on-device Vision cutout (iOS 17 subject lift), tap to choose if several subjects, then edit like an illustrated pet.
 - **Follow mode:** the pet springs after your finger; optional fading paw-print trail.
-- **Idle activities:** the pet randomly blinks, looks around, flicks, yawns, rolls, scratches, naps, zoomies, or (rarely) **飛天出門 / flies out the door**. Default about every **2 hours**; 30m / 1h / 2h / 4h plus an 8-second demo interval. Toggle on/off. **預覽動作 / Preview action** forces a roll (fly-out stays 2%).
+- **Idle activities:** in-app preview plus a **Home Screen widget** (桌面寵物). Same weighted rolls; **飛天出門 is exactly 2%**. Default about every **2 hours**; 30m / 1h / 2h / 4h plus a demo interval. Toggle on/off. **預覽動作 / Preview action** forces a roll in the app.
 - **Undo / reset** and **save to Photos**.
 - **Tutorial** on first launch, replayable from home.
 
@@ -113,7 +113,7 @@ No CocoaPods, SPM packages, or paid APIs. The MVP does not require an account.
 Use this as a high-level list, not a substitute for Apple’s current review guidelines.
 
 1. **Apple Developer Program** membership is active.
-2. **Bundle ID** matches App Store Connect (change the placeholder).
+2. **Bundle ID** matches App Store Connect (change the placeholder). Also change `com.eric1020.petpaper.widget` and App Group `group.com.eric1020.petpaper` to IDs you own, then enable App Groups on both App IDs.
 3. **Signing:** Release archive with your distribution certificate / App Store profile (Automatic signing is fine).
 4. **Version:** `MARKETING_VERSION` 1.0 and `CURRENT_PROJECT_VERSION` 1 (bump build for each upload).
 5. **Privacy:** Photos picker + add-only save. Cutout is on-device Vision only. Do **not** declare full Photo Library read in Privacy Nutrition Labels — `NSPhotoLibraryUsageDescription` was dropped because PHPicker does not need it. Confirm App Privacy matches Info.plist (`NSPhotoLibraryAddUsageDescription` only).
@@ -129,24 +129,25 @@ Replace the generated paw-print icon and review copy before submitting if you wa
 
 ---
 
-## Idle activities (in-app only)
+## Idle activities and the Home Screen widget
 
-The background pet plays a weighted random activity on a timer (default **2 hours**). Weights sum to 100; **飛天出門 / fly out the door is exactly 2%** of every roll, including **預覽動作** and photo-cutout rolls.
+Apple does **not** allow third-party continuous animated wallpapers on SpringBoard. A Photos wallpaper on the Home or Lock Screen is always still.
 
-Illustrated pets use the full set (blink/breathe, look around, ear/tail flick, yawn/stretch, belly roll 翻肚, scratch, sleep curl, zoomies, fly-out). Photo cutouts skip ear/tail and yawn (no separate parts) and remap those tickets to look-around / blink; fly-out stays 2%.
+**To see the pet move on the Home Screen, add the PetPaper widget 桌面寵物:**
 
-Idle **pauses while Follow is on**, **cancels if you drag / pinch / rotate the pet**, then applies a short cooldown after each action. Optional toast shows the action name (zh-Hant + English). Settings persist in UserDefaults (`petpaper.idleEnabled`, `petpaper.idleInterval`, `petpaper.idleToast`).
+1. Run the **PetPaper** scheme (it embeds `PetPaperWidget.appex`).
+2. Long-press the Home Screen → **Edit** / **+** → **Add Widget**.
+3. Search **寵物壁紙 / PetPaper** and add **桌面寵物** (small or medium).
+4. Hold the widget → **Edit Widget** to pick pet, background tint (template), idle on/off, and interval — or leave **跟隨 App / Use app setting**.
+5. Optional: export a still wallpaper from the editor and set it as the Home Screen wallpaper *behind* the widget.
 
-Animations are **temporary transforms** on the editor canvas (and home template / mini previews). They are **not** written into the saved wallpaper. Export remains a still image at 1290×2796.
+Tap the widget to open the editor (`petpaper://editor`).
 
-### Static Photos wallpaper cannot animate
+The widget timeline uses the **same action weights** as in-app idle (`PetIdleAction`, fly-out tickets **98–99 = 2%**). When an activity fires, WidgetKit shows pose frames (SwiftUI views). Fly-out is a short sequence: leave → empty/sparkle portal → return. Photo cutouts are stored as a PNG in the App Group container when you confirm a lift.
 
-iOS Home Screen and Lock Screen **Photos wallpapers are still images**. PetPaper cannot play idle motion on the system wallpaper, and this project does **not** implement Live Wallpaper / video wallpaper export. Live idle plays **inside the app** only:
+**WidgetKit limits:** iOS may coalesce or delay timeline updates while locked or when the process is suspended. A 2-hour cadence is **best-effort**. The in-app **Demo (8 seconds)** interval maps to about **20 seconds** on the widget so Simulator QA can see poses; the system can still skip short gaps. In-app canvas animation remains the high-fidelity preview.
 
-- Editor canvas
-- Home template cards and the idle mini-preview
-
-Do not block release on Live Wallpaper export. After **儲存 / Save**, set the still image as wallpaper the usual way (Photos → Share → Use as Wallpaper).
+Settings sync through App Group UserDefaults (`group.com.eric1020.petpaper`). Enable the **App Groups** capability on both the app and widget App IDs (`group.com.eric1020.petpaper`) in Apple Developer before device/App Store builds. Simulator usually works with Automatic signing.
 
 ---
 

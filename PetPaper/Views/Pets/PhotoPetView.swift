@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct PhotoPetView: View {
     let cutout: PhotoPetCutout

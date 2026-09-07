@@ -2557,13 +2557,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Static Photos wallpapers cannot animate on the iOS Home or Lock Screen. Idle animations play in-app on the editor canvas and home previews. Export is still a still image — Live Wallpaper export is not required."
+            "value": "A Photos wallpaper on the Home or Lock Screen stays still. For a pet that moves on the Home Screen, add the 桌面寵物 widget. Export is still a still image you can place behind the widget."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "iOS 主畫面／鎖定畫面的靜態照片壁紙無法播放動畫。閒置動作只會在 App 內編輯畫布與主頁預覽播放。匯出仍是靜態圖片，不需要 Live Wallpaper。"
+            "value": "主畫面／鎖定畫面的照片壁紙仍是靜態。要讓寵物在主畫面動，請加入「桌面寵物」小工具。匯出仍是靜態圖片，可放在小工具後面當背景。"
           }
         }
       }
@@ -2785,6 +2785,210 @@
           "stringUnit": {
             "state": "translated",
             "value": "閒置"
+          }
+        }
+      }
+    },
+    "widget.displayName": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desktop Pet"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "桌面寵物"
+          }
+        }
+      }
+    },
+    "widget.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An idle pet on the Home Screen. Tap to open the editor."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把會動的寵物放上主畫面。點一下可打開編輯器。"
+          }
+        }
+      }
+    },
+    "widget.pet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pet"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "寵物"
+          }
+        }
+      }
+    },
+    "widget.pet.appSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use app setting"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟隨 App"
+          }
+        }
+      }
+    },
+    "widget.pet.photoCutout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My photo pet"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我的去背寵物"
+          }
+        }
+      }
+    },
+    "widget.template": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "背景"
+          }
+        }
+      }
+    },
+    "widget.template.appSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use app setting"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟隨 App"
+          }
+        }
+      }
+    },
+    "widget.interval.appSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use app setting"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟隨 App"
+          }
+        }
+      }
+    },
+    "widget.idle.appSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use app setting"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟隨 App"
+          }
+        }
+      }
+    },
+    "widget.install.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home Screen widget"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主畫面小工具"
+          }
+        }
+      }
+    },
+    "widget.install.steps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple does not allow third-party live wallpapers. Add the PetPaper widget: long-press the Home Screen → Edit → Add Widget → PetPaper → 桌面寵物. Optionally set your exported still image as the wallpaper behind it."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple 不容許第三方動態壁紙。請把寵物放到主畫面：長按主畫面 → 編輯 → 加入小工具 → 寵物壁紙 → 桌面寵物。也可把匯出的靜態壁紙設成小工具後面的背景。"
+          }
+        }
+      }
+    },
+    "widget.install.limitation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WidgetKit may coalesce updates while the device is locked or the app is suspended, so a 2-hour cadence is best-effort. Use Demo (8s / ~20s on the widget) in Simulator to see pose changes sooner."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "系統可能合併更新（鎖定或 App 被暫停時），兩小時一次只是盡力而為。模擬器請用「預覽（8 秒）」；小工具大約每 20 秒換一個姿勢，較容易看到動作。"
           }
         }
       }
