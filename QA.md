@@ -90,9 +90,25 @@ In-app preview (editor canvas / home cards) plus a WidgetKit extension **桌面�
 8. Lock the device / wait: updates may be delayed or coalesced. Documented; 2h is best-effort.  
 9. Save wallpaper during in-app idle: still resting pose. Widget is independent of the export.
 
+### Uninstall + background (honest iOS behavior)
+
+iOS has **no** `applicationWillBeDeleted`. Do not add a fake uninstall API. Deleting the app already kills the process, removes **桌面寵物** from the Home Screen, cancels that app’s local notifications, stops BG tasks (none registered), and wipes the app container + App Group.
+
+**Audit (code walk, this pass):** no `UIBackgroundModes`, no `BGTaskScheduler`, no `aps-environment` / silent push, no location/audio/VoIP background, no server jobs. Idle is in-process `Task` loops; the widget is a local WidgetKit timeline. Nothing schedules work that can outlive the app.
+
+**In-app hygiene (not a substitute for uninstall):** Home and editor cancel `PetIdleDirector` when `scenePhase` is not `.active` (resign active / background), when the idle `.task` ends, and on disappear. Turning the idle toggle off still stops scheduled motion.
+
+**Device checks**
+
+10. Background or switch apps while a home/editor idle pose is playing: animation should snap back to rest (no keep-alive).  
+11. Delete the app with **桌面寵物** on the Home Screen: the widget is gone immediately; no leftover pet motion. (Linux cannot run this.)  
+12. Signing & Capabilities: App Groups + In-App Purchase only — no Background Modes, no Push Notifications.
+
+Idle settings copy includes `idle.uninstallNote` (zh-Hant + en): 刪除 App 後，主畫面桌面寵物 Widget 會一併消失，背景活動會即時停止。
+
 ## Localization
 
-New keys (zh-Hant + en): … idle.*, `editor.tool.idle`, `widget.displayName`, `widget.description`, `widget.pet*`, `widget.template*`, `widget.interval.appSetting`, `widget.idle.appSetting`, `widget.install.*`.
+New keys (zh-Hant + en): … idle.*, `idle.uninstallNote`, `editor.tool.idle`, `widget.displayName`, `widget.description`, `widget.pet*`, `widget.template*`, `widget.interval.appSetting`, `widget.idle.appSetting`, `widget.install.*`.
 
 Plus / paywall keys (this pass): `paywall.*`, `plus.badge`, `home.plus.*`, `home.upload.locked`, `editor.pet.freeHint`, `a11y.plus.locked`, `a11y.paywall.*`, `a11y.pet.hint`, `idle.locked`.
 

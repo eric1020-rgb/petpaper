@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Pet idle is in-process (`PetIdleDirector`) plus a WidgetKit extension.
+/// There is no uninstall callback, push, or `UIBackgroundModes` work that can outlive the app.
 @main
 struct PetPaperApp: App {
     @State private var session = AppSession()

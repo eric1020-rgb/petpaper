@@ -125,7 +125,10 @@ struct EditorView: View {
             store.idle.showToast = enabled
         }
         .task(id: editorIdleTaskID) {
-            guard session.idleEnabled, subscriptions.canUsePremiumMotion(), scenePhase == .active else { return }
+            guard session.idleEnabled, subscriptions.canUsePremiumMotion(), scenePhase == .active else {
+                store.idle.cancel()
+                return
+            }
             store.idle.showToast = session.idleToastEnabled
             await store.idle.runScheduledLoop(
                 interval: session.idleInterval.seconds,
@@ -133,6 +136,9 @@ struct EditorView: View {
                 photoCutout: { store.usesPhotoPetNow },
                 shouldPause: { store.state.followMode || store.isFollowingTouch || !subscriptions.canUsePremiumMotion() }
             )
+        }
+        .onChange(of: scenePhase) { _, phase in
+            store.idle.handleScenePhase(phase)
         }
         .onDisappear {
             store.idle.cancel()
