@@ -4,7 +4,7 @@ import CoreImage
 
 enum SubjectLiftService {
     static func extract(from source: UIImage) async throws -> [SubjectCandidate] {
-        let prepared = ImageProcessing.constrained(ImageProcessing.normalized(source), maxDimension: 2048)
+        let prepared = ImageProcessing.preparedForImport(source)
         guard prepared.cgImage != nil else { throw SubjectLiftError.unsupportedImage }
 
         try Task.checkCancellation()

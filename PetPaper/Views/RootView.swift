@@ -23,8 +23,9 @@ struct RootView: View {
                     .interactiveDismissDisabled(!session.hasCompletedTutorial)
             case .photoImport:
                 if let image = session.importSourceImage {
-                    PhotoImportView(original: image)
+                    PhotoImportView(original: image, initialTemplate: session.lastTemplate)
                         .environment(session)
+                        .interactiveDismissDisabled()
                 } else {
                     PhotoImportMissingView()
                         .environment(session)
@@ -35,6 +36,9 @@ struct RootView: View {
             if cover != .photoImport {
                 session.importSourceImage = nil
             }
+        }
+        .onChange(of: session.path) { _, path in
+            session.clearPendingPhotoPetIfNeeded(for: path)
         }
     }
 }

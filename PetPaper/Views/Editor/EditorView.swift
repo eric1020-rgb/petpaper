@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 
 struct EditorView: View {
+    @Environment(AppSession.self) private var session
     @State private var store: EditorStore
     @State private var activeSheet: EditorSheet?
     @State private var isExporting = false
@@ -16,6 +17,7 @@ struct EditorView: View {
     var body: some View {
         VStack(spacing: 0) {
             canvasCard
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             hintRow
             EditorToolTray(
                 followMode: $store.state.followMode,
@@ -78,9 +80,22 @@ struct EditorView: View {
             if enabled {
                 store.selection = .pet
                 store.pawTrail.removeAll()
+            } else {
+                store.state.pawTrailEnabled = false
+                store.pawTrail.removeAll()
+                store.endFollow()
             }
         }
-        .onAppear { hueDraft = store.state.hueShift }
+        .onChange(of: store.state.template) { _, template in
+            rememberDraft(template: template)
+        }
+        .onChange(of: store.state.petID) { _, petID in
+            rememberDraft(petID: petID)
+        }
+        .onAppear {
+            hueDraft = store.state.hueShift
+            rememberDraft()
+        }
     }
 
     private var canvasCard: some View {
@@ -95,6 +110,7 @@ struct EditorView: View {
             .padding(.horizontal, 20)
             .padding(.top, 8)
             .padding(.bottom, 10)
+            .frame(maxHeight: .infinity)
     }
 
     private var hintRow: some View {
@@ -102,6 +118,9 @@ struct EditorView: View {
             .font(.footnote.weight(.medium))
             .foregroundStyle(AppTheme.muted)
             .multilineTextAlignment(.center)
+            .lineLimit(3)
+            .minimumScaleFactor(0.8)
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, 20)
             .padding(.bottom, 8)
     }
@@ -173,6 +192,13 @@ struct EditorView: View {
         }
     }
 
+    private func rememberDraft(template: TemplateKind? = nil, petID: String? = nil) {
+        session.remember(
+            template: template ?? store.state.template,
+            petID: store.state.usesPhotoPet ? nil : (petID ?? store.state.petID)
+        )
+    }
+
     @MainActor
     private func exportWallpaper() async {
         isExporting = true
@@ -221,19 +247,15 @@ struct EditorToolTray: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            HStack(spacing: 10) {
-                toggleChip(
-                    title: String(localized: "editor.follow"),
-                    systemImage: "hand.draw.fill",
-                    isOn: $followMode,
-                    hintKey: "a11y.follow.hint"
-                )
-                toggleChip(
-                    title: String(localized: "editor.trail"),
-                    systemImage: "pawprint.fill",
-                    isOn: $pawTrailEnabled,
-                    hintKey: "a11y.trail.hint"
-                )
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 10) {
+                    followChip
+                    trailChip
+                }
+                VStack(spacing: 8) {
+                    followChip
+                    trailChip
+                }
             }
             .padding(.horizontal, 16)
 
@@ -251,45 +273,62 @@ struct EditorToolTray: View {
                 .padding(.horizontal, 16)
             }
         }
-        .padding(.vertical, 14)
+        .padding(.vertical, 12)
         .background(.ultraThinMaterial)
     }
 
-    private func toggleChip(title: String, systemImage: String, isOn: Binding<Bool>, hintKey: String) -> some View {
+    private var followChip: some View {
+        toggleChip(
+            title: String(localized: "editor.follow"),
+            systemImage: "hand.draw.fill",
+            isOn: $followMode,
+            enabled: true,
+            hintKey: "a11y.follow.hint"
+        )
+    }
+
+    private var trailChip: some View {
+        toggleChip(
+            title: String(localized: "editor.trail"),
+            systemImage: "pawprint.fill",
+            isOn: $pawTrailEnabled,
+            enabled: followMode,
+            hintKey: followMode ? "a11y.trail.hint" : "a11y.trail.disabled"
+        )
+    }
+
+    private func toggleChip(title: String, systemImage: String, isOn: Binding<Bool>, enabled: Bool, hintKey: String) -> some View {
         Button {
+            guard enabled else { return }
             isOn.wrappedValue.toggle()
         } label: {
             Label(title, systemImage: systemImage)
                 .font(.subheadline.weight(.semibold))
+                .lineLimit(2)
+                .minimumScaleFactor(0.75)
+                .multilineTextAlignment(.center)
                 .padding(.vertical, 10)
+                .padding(.horizontal, 8)
                 .frame(maxWidth: .infinity)
-                .background(isOn.wrappedValue ? AppTheme.coral : Color.white)
-                .foregroundStyle(isOn.wrappedValue ? Color.white : AppTheme.ink)
+                .background(isOn.wrappedValue && enabled ? AppTheme.coral : Color.white)
+                .foregroundStyle(isOn.wrappedValue && enabled ? Color.white : AppTheme.ink)
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+        .opacity(enabled ? 1 : 0.45)
+        .disabled(!enabled)
         .accessibilityLabel(Text(title))
-        .accessibilityValue(Text(isOn.wrappedValue ? "a11y.on" : "a11y.off"))
+        .accessibilityValue(Text(isOn.wrappedValue && enabled ? "a11y.on" : "a11y.off"))
         .accessibilityHint(Text(LocalizedStringKey(hintKey)))
         .accessibilityAddTraits(.isButton)
-        .accessibilityAddTraits(isOn.wrappedValue ? .isSelected : [])
+        .accessibilityAddTraits(isOn.wrappedValue && enabled ? .isSelected : [])
     }
 
     private func trayButton(_ key: String, _ systemImage: String, _ sheet: EditorSheet) -> some View {
         Button {
             onOpen(sheet)
         } label: {
-            VStack(spacing: 6) {
-                Image(systemName: systemImage)
-                    .font(.title3)
-                Text(LocalizedStringKey(key))
-                    .font(.caption2.weight(.semibold))
-            }
-            .foregroundStyle(AppTheme.ink)
-            .frame(minWidth: 72, minHeight: 64)
-            .padding(.vertical, 4)
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            trayLabel(key, systemImage, enabled: true)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(LocalizedStringKey(key)))
@@ -297,21 +336,30 @@ struct EditorToolTray: View {
 
     private func actionButton(_ key: String, _ systemImage: String, enabled: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            VStack(spacing: 6) {
-                Image(systemName: systemImage)
-                    .font(.title3)
-                Text(LocalizedStringKey(key))
-                    .font(.caption2.weight(.semibold))
-            }
-            .foregroundStyle(enabled ? AppTheme.ink : AppTheme.muted.opacity(0.5))
-            .frame(minWidth: 72, minHeight: 64)
-            .padding(.vertical, 4)
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            trayLabel(key, systemImage, enabled: enabled)
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
         .accessibilityLabel(Text(LocalizedStringKey(key)))
+    }
+
+    private func trayLabel(_ key: String, _ systemImage: String, enabled: Bool) -> some View {
+        VStack(spacing: 6) {
+            Image(systemName: systemImage)
+                .font(.title3)
+            Text(LocalizedStringKey(key))
+                .font(.caption2.weight(.semibold))
+                .lineLimit(2)
+                .minimumScaleFactor(0.7)
+                .multilineTextAlignment(.center)
+        }
+        .foregroundStyle(enabled ? AppTheme.ink : AppTheme.muted.opacity(0.5))
+        .padding(.horizontal, 8)
+        .padding(.vertical, 8)
+        .frame(minWidth: 64, minHeight: 64)
+        .fixedSize(horizontal: true, vertical: true)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 
@@ -463,6 +511,7 @@ struct StickerPickerSheet: View {
                 }
             }
             .padding(20)
+            .background(AppTheme.cream)
             .navigationTitle(Text("editor.tool.sticker"))
         }
     }

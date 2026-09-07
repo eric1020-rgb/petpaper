@@ -15,6 +15,11 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 18) {
                 header
                 uploadCard
+                Text("home.upload.emptyTip")
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 20)
                 if lastPickedItem != nil, !isLoadingPhoto {
                     retryRow
                 }
@@ -29,12 +34,13 @@ struct HomeView: View {
                         Button {
                             session.openEditor(template: template)
                         } label: {
-                            TemplateCard(template: template)
+                            TemplateCard(template: template, isLastUsed: session.hasRememberedEditor && template == session.lastTemplate)
                         }
                         .buttonStyle(.plain)
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel(Text(LocalizedStringKey(template.nameKey)))
                         .accessibilityHint(Text(LocalizedStringKey(template.captionKey)))
+                        .accessibilityValue(session.hasRememberedEditor && template == session.lastTemplate ? Text("home.lastUsed") : Text(""))
                     }
                 }
                 .padding(.horizontal, 20)
@@ -214,6 +220,7 @@ struct PickedImagePayload: Transferable {
 
 struct TemplateCard: View {
     let template: TemplateKind
+    var isLastUsed = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -224,6 +231,17 @@ struct TemplateCard: View {
                     .offset(y: 8)
             }
             .aspectRatio(9 / 16, contentMode: .fit)
+            .overlay(alignment: .topLeading) {
+                if isLastUsed {
+                    Text("home.lastUsed")
+                        .font(.caption2.weight(.bold))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(.ultraThinMaterial, in: Capsule())
+                        .foregroundStyle(AppTheme.ink)
+                        .padding(8)
+                }
+            }
             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 
             Text(LocalizedStringKey(template.nameKey))

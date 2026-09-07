@@ -14,10 +14,15 @@ struct PhotoImportView: View {
     @State private var shadowEnabled = true
     @State private var tintAmount = 0.0
     @State private var cropInset = 0.0
-    @State private var template: TemplateKind = .pastel
+    @State private var template: TemplateKind
     @State private var cropRect = CGRect(x: 0.12, y: 0.12, width: 0.76, height: 0.76)
     @State private var analyzeGeneration = 0
     @State private var previewOrigin: PreviewOrigin = .vision
+
+    init(original: UIImage, initialTemplate: TemplateKind = .pastel) {
+        self.original = original
+        _template = State(initialValue: initialTemplate)
+    }
 
     enum Phase {
         case processing
@@ -185,6 +190,8 @@ struct PhotoImportView: View {
                     .font(.subheadline)
                     .foregroundStyle(AppTheme.muted)
 
+                cutoutTips
+
                 ZStack {
                     CheckerboardBackground()
                     if let previewImage {
@@ -255,9 +262,40 @@ struct PhotoImportView: View {
                                 }
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel(Text(LocalizedStringKey(item.nameKey)))
                     }
                 }
             }
+        }
+    }
+
+    private var cutoutTips: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("import.preview.tipsTitle")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(AppTheme.ink)
+            tipRow(systemImage: "circle.lefthalf.filled", key: "import.preview.tip.contrast")
+            tipRow(systemImage: "viewfinder", key: "import.preview.tip.frame")
+            tipRow(systemImage: "person.3", key: "import.preview.tip.group")
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text("import.preview.tipsTitle"))
+        .accessibilityValue(Text("\(String(localized: "import.preview.tip.contrast")). \(String(localized: "import.preview.tip.frame")). \(String(localized: "import.preview.tip.group"))"))
+    }
+
+    private func tipRow(systemImage: String, key: String) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: systemImage)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(AppTheme.coral)
+                .frame(width: 18)
+            Text(LocalizedStringKey(key))
+                .font(.footnote)
+                .foregroundStyle(AppTheme.muted)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -303,6 +341,7 @@ struct PhotoImportView: View {
             Text("import.manual.body")
                 .font(.subheadline)
                 .foregroundStyle(AppTheme.muted)
+            cutoutTips
             GeometryReader { geo in
                 let fitted = Self.aspectFit(original.size, in: geo.size)
                 Image(uiImage: original)
@@ -402,7 +441,7 @@ struct PhotoImportView: View {
 
     private func applyManualCrop() {
         AppHaptics.light()
-        let cropped = ImageProcessing.crop(ImageProcessing.normalized(original), normalizedRect: cropRect)
+        let cropped = ImageProcessing.crop(ImageProcessing.preparedForImport(original), normalizedRect: cropRect)
         let cutout = ImageProcessing.ellipticalCutout(from: cropped)
         let candidate = SubjectCandidate(
             index: 0,
@@ -419,8 +458,8 @@ struct PhotoImportView: View {
         guard let previewImage else { return }
         AppHaptics.light()
         let cutout = PhotoPetCutout(
-            original: original,
-            cutout: previewImage,
+            original: ImageProcessing.preparedForImport(original),
+            cutout: ImageProcessing.preparedCutout(previewImage),
             instanceIndex: selected?.index ?? 0,
             shadowEnabled: shadowEnabled,
             edgeFeather: edge,
