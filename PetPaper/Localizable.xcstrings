@@ -2585,6 +2585,23 @@
         }
       }
     },
+    "idle.uninstallNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After you delete the app, the Home Screen 桌面寵物 widget disappears with it, and background activity stops immediately."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除 App 後，主畫面桌面寵物 Widget 會一併消失，背景活動會即時停止。"
+          }
+        }
+      }
+    },
     "idle.action.blinkBreathe": {
       "extractionState": "manual",
       "localizations": {

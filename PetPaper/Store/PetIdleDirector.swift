@@ -32,6 +32,14 @@ final class PetIdleDirector {
         }
     }
 
+    /// Stop in-process idle when the scene resigns active or backgrounds.
+    /// Hygiene only — iOS has no `applicationWillBeDeleted`; deleting the app already kills the process.
+    func handleScenePhase(_ phase: ScenePhase) {
+        if phase != .active {
+            cancel()
+        }
+    }
+
     func playRandom(photoCutout: Bool) {
         play(PetIdleAction.roll(photoCutout: photoCutout))
     }
@@ -46,12 +54,14 @@ final class PetIdleDirector {
     }
 
     /// Interval loop. Caller should cancel this task when the screen is inactive or Follow is on.
+    /// Always cancels in-flight pose playback when the loop ends (scene inactive, idle off, or view gone).
     func runScheduledLoop(
         interval: TimeInterval,
         cooldown: TimeInterval,
         photoCutout: @escaping () -> Bool,
         shouldPause: @escaping () -> Bool
     ) async {
+        defer { cancel() }
         while !Task.isCancelled {
             let nanos = UInt64(max(interval, 0.5) * 1_000_000_000)
             try? await Task.sleep(nanoseconds: nanos)

@@ -82,7 +82,10 @@ struct HomeView: View {
             homeIdle.showToast = enabled
         }
         .task(id: homeIdleTaskID) {
-            guard session.path.isEmpty, session.idleEnabled, subscriptions.canUsePremiumMotion(), scenePhase == .active else { return }
+            guard session.path.isEmpty, session.idleEnabled, subscriptions.canUsePremiumMotion(), scenePhase == .active else {
+                homeIdle.cancel()
+                return
+            }
             homeIdle.showToast = session.idleToastEnabled
             homeIdle.anchorPosition = CGPoint(x: 0.5, y: 0.72)
             await homeIdle.runScheduledLoop(
@@ -91,6 +94,9 @@ struct HomeView: View {
                 photoCutout: { false },
                 shouldPause: { !session.path.isEmpty || !subscriptions.canUsePremiumMotion() }
             )
+        }
+        .onChange(of: scenePhase) { _, phase in
+            homeIdle.handleScenePhase(phase)
         }
         .onChange(of: session.path.count) { _, count in
             if count > 0 {
@@ -101,6 +107,9 @@ struct HomeView: View {
             if !hasPlus {
                 homeIdle.cancel()
             }
+        }
+        .onDisappear {
+            homeIdle.cancel()
         }
     }
 

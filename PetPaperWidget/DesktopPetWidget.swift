@@ -28,6 +28,7 @@ struct DesktopPetProvider: AppIntentTimelineProvider {
         restEntry(date: Date(), intent: configuration)
     }
 
+    /// Local WidgetKit timeline only. No push, silent push, or BGAppRefresh — deleting the app removes the widget.
     func timeline(for configuration: DesktopPetIntent, in context: Context) async -> Timeline<DesktopPetEntry> {
         let now = Date()
         let enabled = configuration.resolvedIdleEnabled

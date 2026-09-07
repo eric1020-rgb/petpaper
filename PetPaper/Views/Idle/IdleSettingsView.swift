@@ -104,6 +104,10 @@ struct IdleSettingsCard: View {
                     .font(.caption)
                     .foregroundStyle(AppTheme.muted)
                     .fixedSize(horizontal: false, vertical: true)
+                Text("idle.uninstallNote")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.muted)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(14)
@@ -158,6 +162,7 @@ struct IdleSettingsSheet: View {
                     Text("widget.install.steps")
                     Text("idle.wallpaperNote")
                     Text("widget.install.limitation")
+                    Text("idle.uninstallNote")
                 }
             }
             .navigationTitle(Text("idle.title"))

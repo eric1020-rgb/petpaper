@@ -210,6 +210,34 @@ The widget timeline uses the **same action weights** as in-app idle (`PetIdleAct
 
 Settings sync through App Group UserDefaults (`group.com.eric1020.petpaper`). Enable the **App Groups** capability on both the app and widget App IDs (`group.com.eric1020.petpaper`) in Apple Developer before device/App Store builds. Simulator usually works with Automatic signing.
 
+### Deleting the app stops all pet activity
+
+There is **no** `applicationWillBeDeleted` (or any other uninstall hook) on iOS. PetPaper does not fake one.
+
+When the user deletes the app, iOS already:
+
+- kills the process
+- removes WidgetKit widgets from the Home Screen (including **桌面寵物**)
+- cancels that app’s pending local notifications
+- stops `BGAppRefresh` / `BGProcessing` for the app (PetPaper does not register these)
+- removes the app container and App Group data (`group.com.eric1020.petpaper`)
+
+**刪除 App 後，主畫面桌面寵物 Widget 會一併消失，背景活動會即時停止。** After you delete the app, the Home Screen widget disappears with it, and background activity stops immediately.
+
+**Background audit (current `main`):**
+
+| Mechanism | PetPaper |
+| --- | --- |
+| `UIBackgroundModes` (Info.plist / build settings) | **None** |
+| `BGTaskScheduler` / `BGAppRefresh` / `BGProcessing` | **Not used** |
+| Push (`aps-environment`), silent push, remote widget refresh | **Not used** — entitlements are App Groups only |
+| Location / audio / VoIP / keep-alive background | **Not used** |
+| Server-scheduled jobs | **None** (no backend; StoreKit talks to Apple only) |
+| In-app idle | `PetIdleDirector` unstructured `Task` sleeps on the main actor. Cancelled on `scenePhase != .active`, idle off, Follow, leaving the screen, or Plus expiry. Not a substitute for uninstall. |
+| Home Screen pet | WidgetKit **local** timelines (`.atEnd` / `.after`). Reloaded from the app via `WidgetCenter` when settings change. No push-to-refresh. |
+
+The idle toggle in Settings still turns in-app and widget motion off while the app remains installed.
+
 ---
 
 ## Notes
