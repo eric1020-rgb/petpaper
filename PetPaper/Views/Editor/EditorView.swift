@@ -8,6 +8,7 @@ struct EditorView: View {
     @State private var isExporting = false
     @State private var exportMessage: ExportMessage?
     @State private var hueDraft: Double = 0
+    @Environment(\.scenePhase) private var scenePhase
 
     init(template: TemplateKind, petID: String?, photoPet: PhotoPetCutout? = nil) {
         _store = State(initialValue: EditorStore(template: template, petID: petID, photoPet: photoPet))
@@ -18,6 +19,12 @@ struct EditorView: View {
         VStack(spacing: 0) {
             canvasCard
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .overlay(alignment: .top) {
+                    if session.idleToastEnabled, let key = store.idle.toastKey {
+                        IdleToastBanner(key: key)
+                            .padding(.top, 16)
+                    }
+                }
             hintRow
             EditorToolTray(
                 followMode: $store.state.followMode,
@@ -27,7 +34,11 @@ struct EditorView: View {
                 onUndo: store.undo,
                 onReset: store.reset,
                 onDelete: store.removeSelected,
-                onOpen: { activeSheet = $0 }
+                onOpen: { activeSheet = $0 },
+                onPreviewIdle: {
+                    store.idle.showToast = session.idleToastEnabled
+                    store.previewIdleAction()
+                }
             )
         }
         .background(AppTheme.backgroundGradient.ignoresSafeArea())
@@ -80,6 +91,7 @@ struct EditorView: View {
             if enabled {
                 store.selection = .pet
                 store.pawTrail.removeAll()
+                store.idle.cancel()
             } else {
                 store.state.pawTrailEnabled = false
                 store.pawTrail.removeAll()
@@ -95,7 +107,28 @@ struct EditorView: View {
         .onAppear {
             hueDraft = store.state.hueShift
             rememberDraft()
+            store.idle.showToast = session.idleToastEnabled
         }
+        .onChange(of: session.idleToastEnabled) { _, enabled in
+            store.idle.showToast = enabled
+        }
+        .task(id: editorIdleTaskID) {
+            guard session.idleEnabled, scenePhase == .active else { return }
+            store.idle.showToast = session.idleToastEnabled
+            await store.idle.runScheduledLoop(
+                interval: session.idleInterval.seconds,
+                cooldown: session.idleInterval.cooldown,
+                photoCutout: { store.usesPhotoPetNow },
+                shouldPause: { store.state.followMode || store.isFollowingTouch }
+            )
+        }
+        .onDisappear {
+            store.idle.cancel()
+        }
+    }
+
+    private var editorIdleTaskID: String {
+        "\(session.idleEnabled)-\(session.idleInterval.rawValue)-\(scenePhase)"
     }
 
     private var canvasCard: some View {
@@ -176,6 +209,14 @@ struct EditorView: View {
             .onDisappear {
                 store.endHueEdit()
             }
+        case .idle:
+            IdleSettingsSheet(
+                onPreview: {
+                    store.idle.showToast = session.idleToastEnabled
+                    store.previewIdleAction()
+                },
+                onClose: { activeSheet = nil }
+            )
         case .text:
             TextEditorSheet(
                 initialText: store.state.overlayText,
@@ -224,7 +265,7 @@ struct EditorView: View {
 }
 
 enum EditorSheet: String, Identifiable {
-    case template, pet, sticker, color, text
+    case template, pet, sticker, color, text, idle
     var id: String { rawValue }
 }
 
@@ -244,6 +285,7 @@ struct EditorToolTray: View {
     var onReset: () -> Void
     var onDelete: () -> Void
     var onOpen: (EditorSheet) -> Void
+    var onPreviewIdle: () -> Void
 
     var body: some View {
         VStack(spacing: 12) {
@@ -266,6 +308,8 @@ struct EditorToolTray: View {
                     trayButton("editor.tool.sticker", "face.smiling.fill", .sticker)
                     trayButton("editor.tool.color", "paintpalette.fill", .color)
                     trayButton("editor.tool.text", "textformat", .text)
+                    trayButton("editor.tool.idle", "moon.zzz.fill", .idle)
+                    actionButton("idle.preview", "play.circle.fill", enabled: true, action: onPreviewIdle)
                     actionButton("editor.undo", "arrow.uturn.backward", enabled: canUndo, action: onUndo)
                     actionButton("editor.reset", "arrow.counterclockwise", enabled: true, action: onReset)
                     actionButton("editor.delete", "trash", enabled: canDelete, action: onDelete)

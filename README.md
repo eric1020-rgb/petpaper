@@ -85,10 +85,10 @@ PetPaper/
   InfoPlist.xcstrings       Display name + privacy strings
   PrivacyInfo.xcprivacy     UserDefaults reason CA92.1
   Assets.xcassets           App icon + accent
-  Models/                   Templates, pets, stickers, editor state
-  Store/                    AppSession, EditorStore
+  Models/                   Templates, pets, stickers, editor state, idle actions
+  Store/                    AppSession, EditorStore, PetIdleDirector
   Services/                 Photos export, on-device Vision subject lift
-  Views/                    Home, editor, photo import, tutorial, procedural art
+  Views/                    Home, editor, photo import, tutorial, idle settings, procedural art
 ```
 
 No CocoaPods, SPM packages, or paid APIs. The MVP does not require an account.
@@ -102,6 +102,7 @@ No CocoaPods, SPM packages, or paid APIs. The MVP does not require an account.
 - **Editor:** colors (hue + accent), stickers (paws, hearts, bowls, balls, yarn, …), short text, place / scale / rotate.
 - **Photo pets:** upload from Photos, on-device Vision cutout (iOS 17 subject lift), tap to choose if several subjects, then edit like an illustrated pet.
 - **Follow mode:** the pet springs after your finger; optional fading paw-print trail.
+- **Idle activities:** the pet randomly blinks, looks around, flicks, yawns, rolls, scratches, naps, zoomies, or (rarely) **飛天出門 / flies out the door**. Default about every **2 hours**; 30m / 1h / 2h / 4h plus an 8-second demo interval. Toggle on/off. **預覽動作 / Preview action** forces a roll (fly-out stays 2%).
 - **Undo / reset** and **save to Photos**.
 - **Tutorial** on first launch, replayable from home.
 
@@ -125,6 +126,27 @@ Use this as a high-level list, not a substitute for Apple’s current review gui
 12. **Archive:** Product → Archive → Distribute App → App Store Connect.
 
 Replace the generated paw-print icon and review copy before submitting if you want a stronger brand identity.
+
+---
+
+## Idle activities (in-app only)
+
+The background pet plays a weighted random activity on a timer (default **2 hours**). Weights sum to 100; **飛天出門 / fly out the door is exactly 2%** of every roll, including **預覽動作** and photo-cutout rolls.
+
+Illustrated pets use the full set (blink/breathe, look around, ear/tail flick, yawn/stretch, belly roll 翻肚, scratch, sleep curl, zoomies, fly-out). Photo cutouts skip ear/tail and yawn (no separate parts) and remap those tickets to look-around / blink; fly-out stays 2%.
+
+Idle **pauses while Follow is on**, **cancels if you drag / pinch / rotate the pet**, then applies a short cooldown after each action. Optional toast shows the action name (zh-Hant + English). Settings persist in UserDefaults (`petpaper.idleEnabled`, `petpaper.idleInterval`, `petpaper.idleToast`).
+
+Animations are **temporary transforms** on the editor canvas (and home template / mini previews). They are **not** written into the saved wallpaper. Export remains a still image at 1290×2796.
+
+### Static Photos wallpaper cannot animate
+
+iOS Home Screen and Lock Screen **Photos wallpapers are still images**. PetPaper cannot play idle motion on the system wallpaper, and this project does **not** implement Live Wallpaper / video wallpaper export. Live idle plays **inside the app** only:
+
+- Editor canvas
+- Home template cards and the idle mini-preview
+
+Do not block release on Live Wallpaper export. After **儲存 / Save**, set the still image as wallpaper the usual way (Photos → Share → Use as Wallpaper).
 
 ---
 

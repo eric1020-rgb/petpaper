@@ -34,6 +34,9 @@
 		778031F205A4E9B9D534809A /* ImageProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0507A09E70382EC0CA7440BD /* ImageProcessing.swift */; };
 		388E72CEF468D4D7770A555F /* PhotoPetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE79E910CAD4B103915D063F /* PhotoPetView.swift */; };
 		66C0E1D0A5E08EF83E5EBC61 /* PhotoImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02594540A22A2CFFA58B3C9 /* PhotoImportView.swift */; };
+		8D2B0F15C3E2509B02D44F12 /* PetIdleAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9E04B2D14F8A91C33E01 /* PetIdleAction.swift */; };
+		8D2B0F15C3E2509B02D44F13 /* PetIdleDirector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9E04B2D14F8A91C33E02 /* PetIdleDirector.swift */; };
+		8D2B0F15C3E2509B02D44F14 /* IdleSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9E04B2D14F8A91C33E03 /* IdleSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +69,9 @@
 		0507A09E70382EC0CA7440BD /* ImageProcessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessing.swift; sourceTree = "<group>"; };
 		FE79E910CAD4B103915D063F /* PhotoPetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPetView.swift; sourceTree = "<group>"; };
 		B02594540A22A2CFFA58B3C9 /* PhotoImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImportView.swift; sourceTree = "<group>"; };
+		7C1A9E04B2D14F8A91C33E01 /* PetIdleAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetIdleAction.swift; sourceTree = "<group>"; };
+		7C1A9E04B2D14F8A91C33E02 /* PetIdleDirector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetIdleDirector.swift; sourceTree = "<group>"; };
+		7C1A9E04B2D14F8A91C33E03 /* IdleSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +127,7 @@
 				2D0364D5F24591C166EE91ED /* StickerKind.swift */,
 				F83538547ED14BA4C63E76A1 /* WallpaperTemplate.swift */,
 				21D6ECAFEB148DFED13EF379 /* PhotoPetCutout.swift */,
+				7C1A9E04B2D14F8A91C33E01 /* PetIdleAction.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -130,6 +137,7 @@
 			children = (
 				8E40A88AF0EC64A3F91F404E /* AppSession.swift */,
 				69BBEEC93469BF0D577F0F69 /* EditorStore.swift */,
+				7C1A9E04B2D14F8A91C33E02 /* PetIdleDirector.swift */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -163,6 +171,7 @@
 				00272547D039F43CA94AD207 /* Pets */,
 				88C63C820B8551EC2A1A4CAA /* Stickers */,
 				69A01ED20980BE051BA4F378 /* Import */,
+				7C1A9E04B2D14F8A91C33E10 /* Idle */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -223,6 +232,14 @@
 				B02594540A22A2CFFA58B3C9 /* PhotoImportView.swift */,
 			);
 			path = Import;
+			sourceTree = "<group>";
+		};
+		7C1A9E04B2D14F8A91C33E10 /* Idle */ = {
+			isa = PBXGroup;
+			children = (
+				7C1A9E04B2D14F8A91C33E03 /* IdleSettingsView.swift */,
+			);
+			path = Idle;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -321,6 +338,9 @@
 				778031F205A4E9B9D534809A /* ImageProcessing.swift in Sources */,
 				388E72CEF468D4D7770A555F /* PhotoPetView.swift in Sources */,
 				66C0E1D0A5E08EF83E5EBC61 /* PhotoImportView.swift in Sources */,
+				8D2B0F15C3E2509B02D44F12 /* PetIdleAction.swift in Sources */,
+				8D2B0F15C3E2509B02D44F13 /* PetIdleDirector.swift in Sources */,
+				8D2B0F15C3E2509B02D44F14 /* IdleSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

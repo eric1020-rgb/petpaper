@@ -13,6 +13,7 @@ final class EditorStore {
     var isFollowingTouch = false
     var lastFollowPoint: CGPoint?
     var photoPet: PhotoPetCutout?
+    let idle = PetIdleDirector()
 
     private var undoStack: [EditorState] = []
     private let maxUndo = 40
@@ -32,6 +33,10 @@ final class EditorStore {
             usesPhotoPet: photoPet != nil
         )
         self.photoPet = photoPet
+        idle.anchorPosition = state.petPosition
+        #if DEBUG
+        assert(PetIdleAction.weightsSumToOneHundred, "Idle weights must sum to 100 with flyOutDoor = 2")
+        #endif
     }
 
     func load(template: TemplateKind, petID: String?) {
@@ -42,6 +47,8 @@ final class EditorStore {
         pawTrail.removeAll()
         lookOffset = .zero
         lean = 0
+        idle.cancel()
+        idle.anchorPosition = state.petPosition
     }
 
     func pushUndo() {
@@ -53,8 +60,10 @@ final class EditorStore {
 
     func undo() {
         guard let previous = undoStack.popLast() else { return }
+        idle.cancel()
         state = previous
         selection = .pet
+        idle.anchorPosition = state.petPosition
     }
 
     func reset() {
@@ -64,6 +73,8 @@ final class EditorStore {
         pawTrail.removeAll()
         lookOffset = .zero
         lean = 0
+        idle.cancel()
+        idle.anchorPosition = state.petPosition
     }
 
     func selectPet(_ character: PetCharacter) {
@@ -71,6 +82,7 @@ final class EditorStore {
         state.petID = character.id
         state.usesPhotoPet = false
         selection = .pet
+        idle.cancel()
     }
 
     func restorePhotoPet() {
@@ -78,6 +90,7 @@ final class EditorStore {
         pushUndo()
         state.usesPhotoPet = true
         selection = .pet
+        idle.cancel()
     }
 
     func setTemplate(_ template: TemplateKind) {
@@ -172,7 +185,9 @@ final class EditorStore {
         let dy = delta.height / canvas.height
         switch selection {
         case .pet:
+            cancelIdleForUserDrag()
             state.petPosition = clamp(CGPoint(x: state.petPosition.x + dx, y: state.petPosition.y + dy))
+            idle.anchorPosition = state.petPosition
         case .text:
             state.textPosition = clamp(CGPoint(x: state.textPosition.x + dx, y: state.textPosition.y + dy))
         case .sticker(let id):
@@ -210,6 +225,9 @@ final class EditorStore {
     }
 
     func setSelectedScale(_ scale: CGFloat) {
+        if selection == .pet {
+            cancelIdleForUserDrag()
+        }
         let clamped: CGFloat
         switch selection {
         case .pet:
@@ -229,6 +247,9 @@ final class EditorStore {
     }
 
     func setSelectedRotation(_ rotation: Double) {
+        if selection == .pet {
+            cancelIdleForUserDrag()
+        }
         switch selection {
         case .pet:
             state.petRotation = rotation
@@ -249,6 +270,7 @@ final class EditorStore {
 
     func follow(to point: CGPoint, in canvas: CGSize) {
         guard canvas.width > 0, canvas.height > 0 else { return }
+        idle.cancel()
         if !isFollowingTouch {
             pushUndo()
             isFollowingTouch = true
@@ -284,6 +306,21 @@ final class EditorStore {
             lookOffset = .zero
         }
         pruneTrail()
+        idle.anchorPosition = state.petPosition
+    }
+
+    func cancelIdleForUserDrag() {
+        guard idle.isPlaying else { return }
+        idle.cancel()
+    }
+
+    var usesPhotoPetNow: Bool {
+        state.usesPhotoPet && photoPet != nil
+    }
+
+    func previewIdleAction() {
+        idle.anchorPosition = state.petPosition
+        idle.playRandom(photoCutout: usesPhotoPetNow)
     }
 
     func pruneTrail(now: Date = Date()) {

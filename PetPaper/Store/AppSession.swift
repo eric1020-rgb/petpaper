@@ -27,6 +27,18 @@ final class AppSession {
     /// False until the user has opened the editor (or placed a photo pet) at least once.
     var hasRememberedEditor: Bool
 
+    var idleEnabled: Bool {
+        didSet { UserDefaults.standard.set(idleEnabled, forKey: Self.idleEnabledKey) }
+    }
+
+    var idleInterval: IdleInterval {
+        didSet { UserDefaults.standard.set(idleInterval.rawValue, forKey: Self.idleIntervalKey) }
+    }
+
+    var idleToastEnabled: Bool {
+        didSet { UserDefaults.standard.set(idleToastEnabled, forKey: Self.idleToastKey) }
+    }
+
     var presentedCover: AppCover?
     var path: [EditorRoute] = []
     var importSourceImage: UIImage?
@@ -45,6 +57,14 @@ final class AppSession {
         let storedPet = UserDefaults.standard.string(forKey: Self.lastPetIDKey)
         lastPetID = Self.validatedPetID(storedPet)
         hasRememberedEditor = UserDefaults.standard.object(forKey: Self.lastTemplateKey) != nil
+        idleEnabled = UserDefaults.standard.object(forKey: Self.idleEnabledKey) as? Bool ?? true
+        if let raw = UserDefaults.standard.string(forKey: Self.idleIntervalKey),
+           let interval = IdleInterval(rawValue: raw) {
+            idleInterval = interval
+        } else {
+            idleInterval = .twoHours
+        }
+        idleToastEnabled = UserDefaults.standard.object(forKey: Self.idleToastKey) as? Bool ?? true
     }
 
     func openEditor(template: TemplateKind, petID: String? = nil) {
@@ -113,6 +133,9 @@ final class AppSession {
     private static let tutorialKey = "petpaper.hasCompletedTutorial"
     private static let lastTemplateKey = "petpaper.lastTemplate"
     private static let lastPetIDKey = "petpaper.lastPetID"
+    private static let idleEnabledKey = "petpaper.idleEnabled"
+    private static let idleIntervalKey = "petpaper.idleInterval"
+    private static let idleToastKey = "petpaper.idleToast"
 }
 
 struct EditorRoute: Hashable {

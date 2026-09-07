@@ -5,10 +5,12 @@ import CoreTransferable
 
 struct HomeView: View {
     @Environment(AppSession.self) private var session
+    @Environment(\.scenePhase) private var scenePhase
     @State private var pickedItem: PhotosPickerItem?
     @State private var lastPickedItem: PhotosPickerItem?
     @State private var isLoadingPhoto = false
     @State private var loadFailed = false
+    @State private var homeIdle = PetIdleDirector()
 
     var body: some View {
         ScrollView {
@@ -24,6 +26,11 @@ struct HomeView: View {
                     retryRow
                 }
                 tutorialCard
+                IdleSettingsCard(idle: homeIdle) {
+                    homeIdle.showToast = session.idleToastEnabled
+                    homeIdle.anchorPosition = CGPoint(x: 0.5, y: 0.72)
+                    homeIdle.playRandom(photoCutout: false)
+                }
                 Text("home.section.templates")
                     .font(.title3.weight(.bold))
                     .foregroundStyle(AppTheme.ink)
@@ -34,7 +41,11 @@ struct HomeView: View {
                         Button {
                             session.openEditor(template: template)
                         } label: {
-                            TemplateCard(template: template, isLastUsed: session.hasRememberedEditor && template == session.lastTemplate)
+                            TemplateCard(
+                                template: template,
+                                isLastUsed: session.hasRememberedEditor && template == session.lastTemplate,
+                                idlePose: homeIdle.pose
+                            )
                         }
                         .buttonStyle(.plain)
                         .accessibilityElement(children: .combine)
@@ -61,6 +72,32 @@ struct HomeView: View {
         } message: {
             Text("import.loadFailed.detail")
         }
+        .onAppear {
+            homeIdle.showToast = session.idleToastEnabled
+        }
+        .onChange(of: session.idleToastEnabled) { _, enabled in
+            homeIdle.showToast = enabled
+        }
+        .task(id: homeIdleTaskID) {
+            guard session.path.isEmpty, session.idleEnabled, scenePhase == .active else { return }
+            homeIdle.showToast = session.idleToastEnabled
+            homeIdle.anchorPosition = CGPoint(x: 0.5, y: 0.72)
+            await homeIdle.runScheduledLoop(
+                interval: session.idleInterval.seconds,
+                cooldown: session.idleInterval.cooldown,
+                photoCutout: { false },
+                shouldPause: { !session.path.isEmpty }
+            )
+        }
+        .onChange(of: session.path.count) { _, count in
+            if count > 0 {
+                homeIdle.cancel()
+            }
+        }
+    }
+
+    private var homeIdleTaskID: String {
+        "\(session.idleEnabled)-\(session.idleInterval.rawValue)-\(session.path.count)-\(scenePhase)"
     }
 
     private var header: some View {
@@ -221,14 +258,33 @@ struct PickedImagePayload: Transferable {
 struct TemplateCard: View {
     let template: TemplateKind
     var isLastUsed = false
+    var idlePose: IdlePose = .rest
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             ZStack(alignment: .bottom) {
-                TemplateSceneView(template: template, palette: template.defaultPalette)
-                PetIllustration(character: previewPet)
-                    .frame(width: 78, height: 88)
-                    .offset(y: 8)
+                GeometryReader { geo in
+                    let size = geo.size
+                    TemplateSceneView(template: template, palette: template.defaultPalette)
+                    IdlePortalOverlay(progress: idlePose.portalVisible, in: size)
+                    IdleSparkleOverlay(
+                        amount: idlePose.sparkleAmount,
+                        in: size,
+                        around: CGPoint(
+                            x: (0.5 + idlePose.positionDelta.x) * size.width,
+                            y: (0.78 + idlePose.positionDelta.y) * size.height
+                        )
+                    )
+                    PetIllustration(character: previewPet, lookOffset: idlePose.lookOffset, lean: idlePose.lean, pose: idlePose)
+                        .frame(width: 78, height: 88)
+                        .scaleEffect(idlePose.extraScale * idlePose.bodySquash)
+                        .rotationEffect(.degrees(idlePose.extraRotation))
+                        .opacity(idlePose.opacity)
+                        .position(
+                            x: (0.5 + idlePose.positionDelta.x) * size.width,
+                            y: (0.78 + idlePose.positionDelta.y) * size.height
+                        )
+                }
             }
             .aspectRatio(9 / 16, contentMode: .fit)
             .overlay(alignment: .topLeading) {
