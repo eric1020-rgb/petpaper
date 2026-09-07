@@ -1,0 +1,47 @@
+{
+  "sourceLanguage" : "zh-Hant",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "PetPaper" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "寵物壁紙" } }
+      }
+    },
+    "NSPhotoLibraryAddUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PetPaper saves your wallpaper designs to Photos so you can set them as your Lock Screen or Home Screen."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "寵物壁紙會將你設計的壁紙存到照片，方便設為鎖定畫面或主畫面。"
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PetPaper needs photo library access only to save wallpapers you create."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "寵物壁紙只會在儲存你創作的壁紙時使用照片圖庫。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

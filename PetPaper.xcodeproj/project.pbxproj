@@ -1,0 +1,523 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E609632C7B40179D72638E23 /* EditorState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0BDFEA199FA1DDE30C8C98 /* EditorState.swift */; };
+		E78A0DD82CD72C636F1BFC3B /* PetCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D85AD73FCB123641706303 /* PetCharacter.swift */; };
+		5A7879A45EA6CC103A60AE0E /* RGBAColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD2D355DCD39B59C401DFDC /* RGBAColor.swift */; };
+		2A6BBE19CF79F751BDB873E5 /* StickerKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0364D5F24591C166EE91ED /* StickerKind.swift */; };
+		C2C54802DCA54ADBB2B22170 /* WallpaperTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83538547ED14BA4C63E76A1 /* WallpaperTemplate.swift */; };
+		67B540D8F6CA96D2A3474E67 /* PetPaperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D6F1A2DFB73C8ED62E408D /* PetPaperApp.swift */; };
+		AE997A2527C4C81446BC0676 /* WallpaperExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665D0C8F67DCEA75F0E7ED66 /* WallpaperExporter.swift */; };
+		F742FF9922CA2B0E0E809AA7 /* AppSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E40A88AF0EC64A3F91F404E /* AppSession.swift */; };
+		74D67C6B4853BB5A3680B80A /* EditorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BBEEC93469BF0D577F0F69 /* EditorStore.swift */; };
+		03F3CA89C1C2219604F70F5D /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955ACF5E53C582A49138ADA /* AppTheme.swift */; };
+		94B693F5B36FE8EB3A302BBD /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3A7AA774288B3E3095DCD4 /* EditorView.swift */; };
+		FEBF1B484514A6E354202E55 /* WallpaperCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53E73CA90C452C709FBD5F92 /* WallpaperCanvasView.swift */; };
+		8EE2B7D6161C2E93047E4A74 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072FA5EBFE53AB66E19BA868 /* HomeView.swift */; };
+		2D004256C856B04B318C2966 /* PetIllustration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A265C6EB4BDA5CF0FCD10316 /* PetIllustration.swift */; };
+		0E635729765CAE0EF8CE9C4A /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39F1E791C00B1A7F9B57B2D /* RootView.swift */; };
+		DBD7C5530E947ABF08539B2B /* StickerGlyph.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7F248B520F9000C4092C83 /* StickerGlyph.swift */; };
+		2B37C8736ABBE47780018F7F /* TemplateSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312868588942562E7F2A1F6 /* TemplateSceneView.swift */; };
+		F10722FC198F7935CDAF6230 /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910CDD785D10F8B7FF496E9 /* TutorialView.swift */; };
+		B0237D3616875AAE4DBEE4A3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0D4344AB022A0DCEEAB2CF0 /* Assets.xcassets */; };
+		EFB9F37F6A73528C55F997F5 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 53FD71E7C57E1D088FFB2731 /* Localizable.xcstrings */; };
+		D1F3A3BE1A12DFD36CF69C6C /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8F0EE59DB94F9B36559A4284 /* InfoPlist.xcstrings */; };
+		45EE34D219CC53D65BBC26B0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5994963D1B3A3BCB44C1F943 /* PrivacyInfo.xcprivacy */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		996AD237BC284D463E664FFE /* PetPaper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PetPaper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A0BDFEA199FA1DDE30C8C98 /* EditorState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorState.swift; sourceTree = "<group>"; };
+		F7D85AD73FCB123641706303 /* PetCharacter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCharacter.swift; sourceTree = "<group>"; };
+		1CD2D355DCD39B59C401DFDC /* RGBAColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RGBAColor.swift; sourceTree = "<group>"; };
+		2D0364D5F24591C166EE91ED /* StickerKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerKind.swift; sourceTree = "<group>"; };
+		F83538547ED14BA4C63E76A1 /* WallpaperTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperTemplate.swift; sourceTree = "<group>"; };
+		90D6F1A2DFB73C8ED62E408D /* PetPaperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetPaperApp.swift; sourceTree = "<group>"; };
+		665D0C8F67DCEA75F0E7ED66 /* WallpaperExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperExporter.swift; sourceTree = "<group>"; };
+		8E40A88AF0EC64A3F91F404E /* AppSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSession.swift; sourceTree = "<group>"; };
+		69BBEEC93469BF0D577F0F69 /* EditorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorStore.swift; sourceTree = "<group>"; };
+		5955ACF5E53C582A49138ADA /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		DC3A7AA774288B3E3095DCD4 /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
+		53E73CA90C452C709FBD5F92 /* WallpaperCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperCanvasView.swift; sourceTree = "<group>"; };
+		072FA5EBFE53AB66E19BA868 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A265C6EB4BDA5CF0FCD10316 /* PetIllustration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetIllustration.swift; sourceTree = "<group>"; };
+		F39F1E791C00B1A7F9B57B2D /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		DC7F248B520F9000C4092C83 /* StickerGlyph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerGlyph.swift; sourceTree = "<group>"; };
+		0312868588942562E7F2A1F6 /* TemplateSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateSceneView.swift; sourceTree = "<group>"; };
+		3910CDD785D10F8B7FF496E9 /* TutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
+		D0D4344AB022A0DCEEAB2CF0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		53FD71E7C57E1D088FFB2731 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		8F0EE59DB94F9B36559A4284 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		5994963D1B3A3BCB44C1F943 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		26858F66DF8624867574B286 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4FCBC29864E7C7752B7E193F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		135B373E788E4C77634C5F25 /* PetPaper */ = {
+			isa = PBXGroup;
+			children = (
+				42006AB264CF2AB66A8087C0 /* PetPaper */,
+				113236722DEE1DC96F378B9D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		113236722DEE1DC96F378B9D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				996AD237BC284D463E664FFE /* PetPaper.app */,
+			);
+			sourceTree = "<group>";
+		};
+		42006AB264CF2AB66A8087C0 /* PetPaper */ = {
+			isa = PBXGroup;
+			children = (
+				90D6F1A2DFB73C8ED62E408D /* PetPaperApp.swift */,
+				A0DF1B23B55A1E4A5C5599FC /* Models */,
+				9507A2F36D11875153952E22 /* Store */,
+				FC272D923BE66BA33090974D /* Services */,
+				F8B084301594EAC5A34D23B9 /* Theme */,
+				43B428327CE75128E6D52001 /* Views */,
+				D0D4344AB022A0DCEEAB2CF0 /* Assets.xcassets */,
+				53FD71E7C57E1D088FFB2731 /* Localizable.xcstrings */,
+				8F0EE59DB94F9B36559A4284 /* InfoPlist.xcstrings */,
+				5994963D1B3A3BCB44C1F943 /* PrivacyInfo.xcprivacy */,
+				26858F66DF8624867574B286 /* Info.plist */,
+			);
+			path = PetPaper;
+			sourceTree = "<group>";
+		};
+		A0DF1B23B55A1E4A5C5599FC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0A0BDFEA199FA1DDE30C8C98 /* EditorState.swift */,
+				F7D85AD73FCB123641706303 /* PetCharacter.swift */,
+				1CD2D355DCD39B59C401DFDC /* RGBAColor.swift */,
+				2D0364D5F24591C166EE91ED /* StickerKind.swift */,
+				F83538547ED14BA4C63E76A1 /* WallpaperTemplate.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9507A2F36D11875153952E22 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				8E40A88AF0EC64A3F91F404E /* AppSession.swift */,
+				69BBEEC93469BF0D577F0F69 /* EditorStore.swift */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		FC272D923BE66BA33090974D /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				665D0C8F67DCEA75F0E7ED66 /* WallpaperExporter.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		F8B084301594EAC5A34D23B9 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				5955ACF5E53C582A49138ADA /* AppTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		43B428327CE75128E6D52001 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F39F1E791C00B1A7F9B57B2D /* RootView.swift */,
+				4BA81F2252D6F9A017CBF1FA /* Home */,
+				4B2CD8BC710A33A1F71165F7 /* Editor */,
+				9B7AF987859E54C997F713E5 /* Tutorial */,
+				526F34059393605AF0312D52 /* Templates */,
+				00272547D039F43CA94AD207 /* Pets */,
+				88C63C820B8551EC2A1A4CAA /* Stickers */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		4BA81F2252D6F9A017CBF1FA /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				072FA5EBFE53AB66E19BA868 /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		4B2CD8BC710A33A1F71165F7 /* Editor */ = {
+			isa = PBXGroup;
+			children = (
+				DC3A7AA774288B3E3095DCD4 /* EditorView.swift */,
+				53E73CA90C452C709FBD5F92 /* WallpaperCanvasView.swift */,
+			);
+			path = Editor;
+			sourceTree = "<group>";
+		};
+		9B7AF987859E54C997F713E5 /* Tutorial */ = {
+			isa = PBXGroup;
+			children = (
+				3910CDD785D10F8B7FF496E9 /* TutorialView.swift */,
+			);
+			path = Tutorial;
+			sourceTree = "<group>";
+		};
+		526F34059393605AF0312D52 /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				0312868588942562E7F2A1F6 /* TemplateSceneView.swift */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
+		00272547D039F43CA94AD207 /* Pets */ = {
+			isa = PBXGroup;
+			children = (
+				A265C6EB4BDA5CF0FCD10316 /* PetIllustration.swift */,
+			);
+			path = Pets;
+			sourceTree = "<group>";
+		};
+		88C63C820B8551EC2A1A4CAA /* Stickers */ = {
+			isa = PBXGroup;
+			children = (
+				DC7F248B520F9000C4092C83 /* StickerGlyph.swift */,
+			);
+			path = Stickers;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		42AEFBAE01D2DFD981F7DA7D /* PetPaper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 877056EAC8BCE553B8687A84 /* Build configuration list for PBXNativeTarget "PetPaper" */;
+			buildPhases = (
+				C197A1D4E0DE673615AC32CB /* Sources */,
+				4FCBC29864E7C7752B7E193F /* Frameworks */,
+				8A6A452CEE30B0908A47D41D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PetPaper;
+			productName = PetPaper;
+			productReference = 996AD237BC284D463E664FFE /* PetPaper.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		46F86FAA6BBF9AC94A7E4595 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					42AEFBAE01D2DFD981F7DA7D = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 94907240659EECAB8BD64F3E /* Build configuration list for PBXProject "PetPaper" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = "zh-Hant";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				"zh-Hant",
+			);
+			mainGroup = 135B373E788E4C77634C5F25;
+			productRefGroup = 113236722DEE1DC96F378B9D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				42AEFBAE01D2DFD981F7DA7D /* PetPaper */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8A6A452CEE30B0908A47D41D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0237D3616875AAE4DBEE4A3 /* Assets.xcassets in Resources */,
+				EFB9F37F6A73528C55F997F5 /* Localizable.xcstrings in Resources */,
+				D1F3A3BE1A12DFD36CF69C6C /* InfoPlist.xcstrings in Resources */,
+				45EE34D219CC53D65BBC26B0 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C197A1D4E0DE673615AC32CB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E609632C7B40179D72638E23 /* EditorState.swift in Sources */,
+				E78A0DD82CD72C636F1BFC3B /* PetCharacter.swift in Sources */,
+				5A7879A45EA6CC103A60AE0E /* RGBAColor.swift in Sources */,
+				2A6BBE19CF79F751BDB873E5 /* StickerKind.swift in Sources */,
+				C2C54802DCA54ADBB2B22170 /* WallpaperTemplate.swift in Sources */,
+				67B540D8F6CA96D2A3474E67 /* PetPaperApp.swift in Sources */,
+				AE997A2527C4C81446BC0676 /* WallpaperExporter.swift in Sources */,
+				F742FF9922CA2B0E0E809AA7 /* AppSession.swift in Sources */,
+				74D67C6B4853BB5A3680B80A /* EditorStore.swift in Sources */,
+				03F3CA89C1C2219604F70F5D /* AppTheme.swift in Sources */,
+				94B693F5B36FE8EB3A302BBD /* EditorView.swift in Sources */,
+				FEBF1B484514A6E354202E55 /* WallpaperCanvasView.swift in Sources */,
+				8EE2B7D6161C2E93047E4A74 /* HomeView.swift in Sources */,
+				2D004256C856B04B318C2966 /* PetIllustration.swift in Sources */,
+				0E635729765CAE0EF8CE9C4A /* RootView.swift in Sources */,
+				DBD7C5530E947ABF08539B2B /* StickerGlyph.swift in Sources */,
+				2B37C8736ABBE47780018F7F /* TemplateSceneView.swift in Sources */,
+				F10722FC198F7935CDAF6230 /* TutorialView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F3E469D9CF2672B87FCF79D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4FF944F08AACB37CF71EA40B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E80CC40A93BCCAD3D67D7326 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PetPaper/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "寵物壁紙";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "寵物壁紙會將你設計的壁紙存到照片，方便設為鎖定畫面或主畫面。";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "寵物壁紙只會在儲存你創作的壁紙時使用照片圖庫。";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eric1020.petpaper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		5C82B8BAAB3F3D25C6A6E8D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PetPaper/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "寵物壁紙";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "寵物壁紙會將你設計的壁紙存到照片，方便設為鎖定畫面或主畫面。";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "寵物壁紙只會在儲存你創作的壁紙時使用照片圖庫。";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eric1020.petpaper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		94907240659EECAB8BD64F3E /* Build configuration list for PBXProject "PetPaper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3E469D9CF2672B87FCF79D5 /* Debug */,
+				4FF944F08AACB37CF71EA40B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		877056EAC8BCE553B8687A84 /* Build configuration list for PBXNativeTarget "PetPaper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E80CC40A93BCCAD3D67D7326 /* Debug */,
+				5C82B8BAAB3F3D25C6A6E8D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 46F86FAA6BBF9AC94A7E4595 /* Project object */;
+}
