@@ -16,6 +16,8 @@ final class EditorStore {
 
     private var undoStack: [EditorState] = []
     private let maxUndo = 40
+    private var isEditingHue = false
+    private var isEditingText = false
 
     var pet: PetCharacter {
         PetCharacter.character(id: state.petID)
@@ -121,8 +123,34 @@ final class EditorStore {
         }
     }
 
+    /// Call when the hue slider starts moving so one undo covers the whole gesture.
+    func beginHueEdit() {
+        guard !isEditingHue else { return }
+        pushUndo()
+        isEditingHue = true
+    }
+
+    func endHueEdit() {
+        isEditingHue = false
+    }
+
     func applyHue(_ value: Double) {
         state.hueShift = value
+    }
+
+    /// Call once before the first overlay-text mutation in a sheet session.
+    func beginTextEdit() {
+        guard !isEditingText else { return }
+        pushUndo()
+        isEditingText = true
+    }
+
+    func endTextEdit() {
+        isEditingText = false
+    }
+
+    func setOverlayText(_ text: String) {
+        state.overlayText = String(text.prefix(24))
     }
 
     func applyAccent(_ color: RGBAColor) {

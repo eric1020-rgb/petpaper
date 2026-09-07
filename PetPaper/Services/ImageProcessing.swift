@@ -1,9 +1,47 @@
 import UIKit
+import ImageIO
 import CoreImage
 import CoreImage.CIFilterBuiltins
 
 enum ImageProcessing {
     private static let ciContext = CIContext(options: [.useSoftwareRenderer: false])
+
+    /// Decodes picker bytes (JPEG / PNG / HEIC) via UIImage, then ImageIO.
+    static func uiImage(fromPhotoData data: Data) -> UIImage? {
+        if let image = UIImage(data: data) {
+            return image
+        }
+        let options: [CFString: Any] = [
+            kCGImageSourceShouldCache: false,
+            kCGImageSourceShouldAllowFloat: true
+        ]
+        guard let source = CGImageSourceCreateWithData(data as CFData, options as CFDictionary),
+              CGImageSourceGetCount(source) > 0,
+              let cgImage = CGImageSourceCreateImageAtIndex(source, 0, options as CFDictionary) else {
+            return nil
+        }
+        let orientation = imageOrientation(from: source)
+        return UIImage(cgImage: cgImage, scale: 1, orientation: orientation)
+    }
+
+    private static func imageOrientation(from source: CGImageSource) -> UIImage.Orientation {
+        guard let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+              let raw = properties[kCGImagePropertyOrientation] as? UInt32,
+              let cgOrientation = CGImagePropertyOrientation(rawValue: raw) else {
+            return .up
+        }
+        switch cgOrientation {
+        case .up: return .up
+        case .upMirrored: return .upMirrored
+        case .down: return .down
+        case .downMirrored: return .downMirrored
+        case .left: return .left
+        case .leftMirrored: return .leftMirrored
+        case .right: return .right
+        case .rightMirrored: return .rightMirrored
+        @unknown default: return .up
+        }
+    }
 
     static func normalized(_ image: UIImage) -> UIImage {
         if image.imageOrientation == .up { return image }

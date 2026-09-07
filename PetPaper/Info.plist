@@ -4,8 +4,6 @@
 <dict>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>寵物壁紙會將你設計的壁紙存到照片，方便設為鎖定畫面或主畫面。</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>寵物壁紙會讀取你選的照片，在裝置上取出貓或狗，並將完成的壁紙存回照片。</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

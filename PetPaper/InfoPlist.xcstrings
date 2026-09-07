@@ -24,23 +24,6 @@
           }
         }
       }
-    },
-    "NSPhotoLibraryUsageDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PetPaper reads a photo you pick so it can lift your cat or dog on this device, and saves finished wallpapers back to Photos."
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "寵物壁紙會讀取你選的照片，在裝置上取出貓或狗，並將完成的壁紙存回照片。"
-          }
-        }
-      }
     }
   },
   "version" : "1.0"

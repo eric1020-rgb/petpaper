@@ -1,10 +1,12 @@
 import SwiftUI
-import UIKit
 import PhotosUI
+import UniformTypeIdentifiers
+import CoreTransferable
 
 struct HomeView: View {
     @Environment(AppSession.self) private var session
     @State private var pickedItem: PhotosPickerItem?
+    @State private var lastPickedItem: PhotosPickerItem?
     @State private var isLoadingPhoto = false
     @State private var loadFailed = false
 
@@ -13,6 +15,9 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 18) {
                 header
                 uploadCard
+                if lastPickedItem != nil, !isLoadingPhoto {
+                    retryRow
+                }
                 tutorialCard
                 Text("home.section.templates")
                     .font(.title3.weight(.bold))
@@ -27,6 +32,9 @@ struct HomeView: View {
                             TemplateCard(template: template)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(Text(LocalizedStringKey(template.nameKey)))
+                        .accessibilityHint(Text(LocalizedStringKey(template.captionKey)))
                     }
                 }
                 .padding(.horizontal, 20)
@@ -40,6 +48,9 @@ struct HomeView: View {
             Task { await loadPickedPhoto(item) }
         }
         .alert(String(localized: "import.loadFailed.title"), isPresented: $loadFailed) {
+            Button(String(localized: "import.retry")) {
+                retryLastPick()
+            }
             Button(String(localized: "common.ok"), role: .cancel) {}
         } message: {
             Text("import.loadFailed.detail")
@@ -94,6 +105,25 @@ struct HomeView: View {
         .buttonStyle(.plain)
         .padding(.horizontal, 20)
         .disabled(isLoadingPhoto)
+        .accessibilityLabel(Text("home.upload.title"))
+        .accessibilityHint(Text("a11y.upload.hint"))
+        .accessibilityValue(Text(isLoadingPhoto ? "import.processing" : "home.upload.caption"))
+    }
+
+    private var retryRow: some View {
+        Button {
+            retryLastPick()
+        } label: {
+            Label(String(localized: "import.retry"), systemImage: "arrow.clockwise")
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+        }
+        .buttonStyle(.bordered)
+        .tint(AppTheme.coral)
+        .padding(.horizontal, 20)
+        .accessibilityLabel(Text("import.retry"))
+        .accessibilityHint(Text("import.loadFailed.detail"))
     }
 
     private var tutorialCard: some View {
@@ -128,21 +158,56 @@ struct HomeView: View {
         .padding(.horizontal, 20)
     }
 
+    private func retryLastPick() {
+        guard let item = lastPickedItem else { return }
+        Task { await loadPickedPhoto(item) }
+    }
+
     private func loadPickedPhoto(_ item: PhotosPickerItem) async {
         isLoadingPhoto = true
-        defer {
-            isLoadingPhoto = false
+        lastPickedItem = item
+        defer { isLoadingPhoto = false }
+        if let image = await PhotoPickerLoader.uiImage(from: item) {
             pickedItem = nil
-        }
-        do {
-            guard let data = try await item.loadTransferable(type: Data.self),
-                  let image = UIImage(data: data) else {
-                loadFailed = true
-                return
-            }
+            lastPickedItem = nil
             session.beginPhotoImport(image)
-        } catch {
-            loadFailed = true
+            return
+        }
+        pickedItem = nil
+        loadFailed = true
+    }
+}
+
+enum PhotoPickerLoader {
+    static func uiImage(from item: PhotosPickerItem) async -> UIImage? {
+        if let data = try? await item.loadTransferable(type: Data.self),
+           let image = ImageProcessing.uiImage(fromPhotoData: data) {
+            return image
+        }
+        if let payload = try? await item.loadTransferable(type: PickedImagePayload.self),
+           let image = ImageProcessing.uiImage(fromPhotoData: payload.data) {
+            return image
+        }
+        return nil
+    }
+}
+
+/// Typed transferable so HEIC / JPEG / PNG still decode when generic `Data` fails.
+struct PickedImagePayload: Transferable {
+    let data: Data
+
+    static var transferRepresentation: some TransferRepresentation {
+        DataRepresentation(importedContentType: .image) { data in
+            PickedImagePayload(data: data)
+        }
+        DataRepresentation(importedContentType: .heic) { data in
+            PickedImagePayload(data: data)
+        }
+        DataRepresentation(importedContentType: .jpeg) { data in
+            PickedImagePayload(data: data)
+        }
+        DataRepresentation(importedContentType: .png) { data in
+            PickedImagePayload(data: data)
         }
     }
 }

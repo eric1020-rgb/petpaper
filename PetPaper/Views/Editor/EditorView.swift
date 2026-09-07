@@ -44,6 +44,8 @@ struct EditorView: View {
                     }
                 }
                 .disabled(isExporting)
+                .accessibilityLabel(Text("editor.save"))
+                .accessibilityHint(Text("a11y.save.hint"))
             }
         }
         .toolbarBackground(.visible, for: .navigationBar)
@@ -129,8 +131,10 @@ struct EditorView: View {
                 usesPhotoPet: store.state.usesPhotoPet
             ) { pet in
                 store.selectPet(pet)
+                activeSheet = nil
             } onPickPhoto: {
                 store.restorePhotoPet()
+                activeSheet = nil
             }
         case .sticker:
             StickerPickerSheet { kind in
@@ -141,19 +145,30 @@ struct EditorView: View {
             ColorEditorSheet(
                 hue: $hueDraft,
                 accent: store.state.palette.accent,
+                onHueEditingBegan: store.beginHueEdit,
+                onHueEditingEnded: store.endHueEdit,
+                onHueChange: store.applyHue,
                 onAccent: store.applyAccent,
                 onReset: {
                     store.restoreDefaultPalette()
                     hueDraft = 0
                 }
             )
-            .onChange(of: hueDraft) { _, value in
-                store.applyHue(value)
+            .onDisappear {
+                store.endHueEdit()
             }
         case .text:
-            TextEditorSheet(text: $store.state.overlayText) {
+            TextEditorSheet(
+                initialText: store.state.overlayText,
+                onBeginEdit: store.beginTextEdit,
+                onTextChange: store.setOverlayText
+            ) {
+                store.endTextEdit()
                 store.selection = store.state.overlayText.isEmpty ? .pet : .text
                 activeSheet = nil
+            }
+            .onDisappear {
+                store.endTextEdit()
             }
         }
     }
@@ -210,12 +225,14 @@ struct EditorToolTray: View {
                 toggleChip(
                     title: String(localized: "editor.follow"),
                     systemImage: "hand.draw.fill",
-                    isOn: $followMode
+                    isOn: $followMode,
+                    hintKey: "a11y.follow.hint"
                 )
                 toggleChip(
                     title: String(localized: "editor.trail"),
                     systemImage: "pawprint.fill",
-                    isOn: $pawTrailEnabled
+                    isOn: $pawTrailEnabled,
+                    hintKey: "a11y.trail.hint"
                 )
             }
             .padding(.horizontal, 16)
@@ -238,7 +255,7 @@ struct EditorToolTray: View {
         .background(.ultraThinMaterial)
     }
 
-    private func toggleChip(title: String, systemImage: String, isOn: Binding<Bool>) -> some View {
+    private func toggleChip(title: String, systemImage: String, isOn: Binding<Bool>, hintKey: String) -> some View {
         Button {
             isOn.wrappedValue.toggle()
         } label: {
@@ -251,6 +268,11 @@ struct EditorToolTray: View {
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(Text(title))
+        .accessibilityValue(Text(isOn.wrappedValue ? "a11y.on" : "a11y.off"))
+        .accessibilityHint(Text(LocalizedStringKey(hintKey)))
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAddTraits(isOn.wrappedValue ? .isSelected : [])
     }
 
     private func trayButton(_ key: String, _ systemImage: String, _ sheet: EditorSheet) -> some View {
@@ -264,11 +286,13 @@ struct EditorToolTray: View {
                     .font(.caption2.weight(.semibold))
             }
             .foregroundStyle(AppTheme.ink)
-            .frame(width: 72, height: 64)
+            .frame(minWidth: 72, minHeight: 64)
+            .padding(.vertical, 4)
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(Text(LocalizedStringKey(key)))
     }
 
     private func actionButton(_ key: String, _ systemImage: String, enabled: Bool, action: @escaping () -> Void) -> some View {
@@ -280,12 +304,14 @@ struct EditorToolTray: View {
                     .font(.caption2.weight(.semibold))
             }
             .foregroundStyle(enabled ? AppTheme.ink : AppTheme.muted.opacity(0.5))
-            .frame(width: 72, height: 64)
+            .frame(minWidth: 72, minHeight: 64)
+            .padding(.vertical, 4)
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
+        .accessibilityLabel(Text(LocalizedStringKey(key)))
     }
 }
 
@@ -318,6 +344,11 @@ struct TemplatePickerSheet: View {
                             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                         }
                         .buttonStyle(.plain)
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(Text(LocalizedStringKey(template.nameKey)))
+                        .accessibilityHint(Text("a11y.template.hint"))
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityAddTraits(template == current ? .isSelected : [])
                     }
                 }
                 .padding(16)
@@ -440,6 +471,9 @@ struct StickerPickerSheet: View {
 struct ColorEditorSheet: View {
     @Binding var hue: Double
     var accent: RGBAColor
+    var onHueEditingBegan: () -> Void
+    var onHueEditingEnded: () -> Void
+    var onHueChange: (Double) -> Void
     var onAccent: (RGBAColor) -> Void
     var onReset: () -> Void
 
@@ -454,8 +488,18 @@ struct ColorEditorSheet: View {
             VStack(alignment: .leading, spacing: 20) {
                 Text("editor.hue")
                     .font(.headline)
-                Slider(value: $hue, in: 0...1)
-                    .tint(AppTheme.coral)
+                Slider(value: $hue, in: 0...1) { editing in
+                    if editing {
+                        onHueEditingBegan()
+                    } else {
+                        onHueEditingEnded()
+                    }
+                }
+                .tint(AppTheme.coral)
+                .accessibilityLabel(Text("editor.hue"))
+                .onChange(of: hue) { _, value in
+                    onHueChange(value)
+                }
 
                 Text("editor.accent")
                     .font(.headline)
@@ -494,20 +538,31 @@ struct ColorEditorSheet: View {
 }
 
 struct TextEditorSheet: View {
-    @Binding var text: String
+    var initialText: String
+    var onBeginEdit: () -> Void
+    var onTextChange: (String) -> Void
     var onDone: () -> Void
+    @State private var draft = ""
+    @State private var didBeginEdit = false
     @FocusState private var focused: Bool
 
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 16) {
-                TextField(String(localized: "editor.text.placeholder"), text: $text)
+                TextField(String(localized: "editor.text.placeholder"), text: $draft)
                     .textFieldStyle(.roundedBorder)
                     .focused($focused)
-                    .onChange(of: text) { _, value in
-                        if value.count > 24 {
-                            text = String(value.prefix(24))
+                    .onChange(of: draft) { _, value in
+                        let clipped = String(value.prefix(24))
+                        if clipped != value {
+                            draft = clipped
+                            return
                         }
+                        if !didBeginEdit && clipped != initialText {
+                            onBeginEdit()
+                            didBeginEdit = true
+                        }
+                        onTextChange(clipped)
                     }
                 Text("editor.text.limit")
                     .font(.footnote)
@@ -521,7 +576,11 @@ struct TextEditorSheet: View {
                     Button(String(localized: "editor.text.done"), action: onDone)
                 }
             }
-            .onAppear { focused = true }
+            .onAppear {
+                draft = initialText
+                didBeginEdit = false
+                focused = true
+            }
         }
     }
 }

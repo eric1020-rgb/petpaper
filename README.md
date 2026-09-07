@@ -50,7 +50,9 @@ Keep it in sync with the App ID you create in [Apple Developer](https://develope
 - The canvas is rendered at **1290 × 2796**, a size that fits modern iPhone wallpapers.
 - Then in iOS: Photos → share / wallpaper, or Settings → Wallpaper.
 
-Photos permission copy lives in `PetPaper/Info.plist` and `PetPaper/InfoPlist.xcstrings` (zh-Hant + English). The picker uses the system photo picker (no full-library permission required). Saving wallpapers requests **add-only** access.
+Photos permission copy lives in `PetPaper/Info.plist` and `PetPaper/InfoPlist.xcstrings` (zh-Hant + English). The picker uses the system photo picker (`PhotosPicker` / PHPicker — no full-library permission). Saving wallpapers requests **add-only** access.
+
+`NSPhotoLibraryUsageDescription` is **not** included. With PHPicker + add-only save, that key is unused and can look like a full-library read to App Review. Do not add it back unless you start calling `PHPhotoLibrary.requestAuthorization` for `.readWrite`.
 
 ---
 
@@ -113,7 +115,7 @@ Use this as a high-level list, not a substitute for Apple’s current review gui
 2. **Bundle ID** matches App Store Connect (change the placeholder).
 3. **Signing:** Release archive with your distribution certificate / App Store profile (Automatic signing is fine).
 4. **Version:** `MARKETING_VERSION` 1.0 and `CURRENT_PROJECT_VERSION` 1 (bump build for each upload).
-5. **Privacy:** Photos picker + add-only save strings are set. Cutout is on-device Vision only. Privacy Nutrition Labels: the app does not collect account data; it only reads a photo the user picks and writes images they save. Confirm in App Privacy.
+5. **Privacy:** Photos picker + add-only save. Cutout is on-device Vision only. Do **not** declare full Photo Library read in Privacy Nutrition Labels — `NSPhotoLibraryUsageDescription` was dropped because PHPicker does not need it. Confirm App Privacy matches Info.plist (`NSPhotoLibraryAddUsageDescription` only).
 6. **Privacy manifest:** `PrivacyInfo.xcprivacy` declares UserDefaults reason `CA92.1` (tutorial completion flag).
 7. **Icons:** replace the placeholder 1024×1024 `AppIcon` if you want a custom marketing icon. iOS app icons must be opaque.
 8. **Screenshots:** capture iPhone 6.7" (and any other required sizes) of home, editor, follow mode, and export.
