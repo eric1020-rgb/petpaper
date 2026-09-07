@@ -26,8 +26,8 @@ Code-level first-run QA (this repo cannot run Simulator) lives in **[QA.md](QA.m
 
 1. 用 Xcode 打開 `PetPaper.xcodeproj`。
 2. 選 iPhone 模擬器，在 Signing 選你的 Team，按 ⌘R 執行。
-3. 首次啟動會進入教學：選模板 → 選寵物 → 拖曳跟著走 → 儲存。主畫面也可「用我嘅相」上傳貓狗照片去背。
-4. 在編輯器點右上角 **儲存**，壁紙會寫入「照片」（1290×2796）。iOS 主畫面壁紙是靜態的；要讓寵物在桌面動，請加入「桌面寵物」小工具。
+3. 首次啟動會進入教學：選模板 → 選寵物 → 拖曳跟著走 → 儲存。主畫面也可「用我嘅相」上傳貓狗照片去背（**寵物壁紙 Plus**：一個月免費試用，其後每月約 US$1 / US$0.99）。
+4. 在編輯器點右上角 **儲存**，壁紙會寫入「照片」（1290×2796）。iOS 主畫面壁紙是靜態的；要讓寵物在桌面動，請加入「桌面寵物」小工具。試用完未訂閱仍可改模板、用虎斑貓、跟著走同儲存；閒置動態同小工具進階姿勢屬 Plus。
 
 ---
 
@@ -58,7 +58,7 @@ Photos permission copy lives in `PetPaper/Info.plist` and `PetPaper/InfoPlist.xc
 
 ## Upload a photo and lift the pet (iOS 17+)
 
-Home screen card **用我嘅相 / Upload a pet photo**:
+Home screen card **用我嘅相 / Upload a pet photo** (PetPaper Plus — included in the 1-month trial):
 
 1. Pick an image with `PhotosPicker`.
 2. On-device **Vision** (`VNGenerateForegroundInstanceMaskRequest`) lifts foreground subjects. Cats/dogs are preferred when `VNRecognizeAnimalsRequest` can label them.
@@ -83,28 +83,88 @@ PetPaper/
   PetPaper.entitlements     App Group `group.com.eric1020.petpaper`
   Info.plist                Photos usage + portrait + petpaper:// URL scheme
   Localizable.xcstrings     UI strings (zh-Hant primary, English secondary)
+  InfoPlist.xcstrings       Display name + privacy strings
+  PrivacyInfo.xcprivacy     UserDefaults reason CA92.1
+  Assets.xcassets           App icon + accent
   Shared/AppGroupStore.swift  Settings + photo-cutout snapshot for the widget
   Models/                   Templates, pets, stickers, editor state, idle actions
-  Store/                    AppSession, EditorStore, PetIdleDirector
+  Store/                    AppSession, EditorStore, PetIdleDirector, SubscriptionManager (StoreKit 2)
   Services/                 Photos export, on-device Vision subject lift
-  Views/                    Home, editor, photo import, tutorial, idle settings, procedural art
+  Views/                    Home, editor, photo import, tutorial, idle settings, paywall, procedural art
+  Products.storekit         Local StoreKit Configuration (monthly Plus + 1-month trial)
 PetPaperWidget/             Home Screen WidgetKit extension (桌面寵物)
 ```
 
-No CocoaPods, SPM packages, or paid APIs. The MVP does not require an account.
+No CocoaPods, SPM packages, or third-party IAP SDKs. Subscriptions use Apple StoreKit 2 only. The app does not require an account.
 
 ---
 
 ## Features (MVP)
 
-- **Gallery:** 8 SwiftUI scenes (pastel, night sky, park, cozy room, neon, sakura, beach, snow).
-- **Pets:** 6 cats and 6 dogs, drawn with Canvas / shapes (tabby, calico, tuxedo, Siamese, grey, white; golden, corgi, husky, Dalmatian, shiba, black dog).
-- **Editor:** colors (hue + accent), stickers (paws, hearts, bowls, balls, yarn, …), short text, place / scale / rotate.
-- **Photo pets:** upload from Photos, on-device Vision cutout (iOS 17 subject lift), tap to choose if several subjects, then edit like an illustrated pet.
+- **Gallery:** 8 SwiftUI scenes (pastel, night sky, park, cozy room, neon, sakura, beach, snow). Always free.
+- **Pets:** 6 cats and 6 dogs, drawn with Canvas / shapes. After a trial expires without Plus, the **tabby cat** stays free; other illustrated pets are Plus.
+- **Editor:** colors (hue + accent), stickers (paws, hearts, bowls, balls, yarn, …), short text, place / scale / rotate. Follow mode stays free.
+- **Photo pets (Plus):** upload from Photos, on-device Vision cutout (iOS 17 subject lift), tap to choose if several subjects, then edit like an illustrated pet.
 - **Follow mode:** the pet springs after your finger; optional fading paw-print trail.
-- **Idle activities:** in-app preview plus a **Home Screen widget** (桌面寵物). Same weighted rolls; **飛天出門 is exactly 2%**. Default about every **2 hours**; 30m / 1h / 2h / 4h plus a demo interval. Toggle on/off. **預覽動作 / Preview action** forces a roll in the app.
-- **Undo / reset** and **save to Photos**.
+- **Idle activities (Plus):** in-app preview plus a **Home Screen widget** (桌面寵物). Same weighted rolls; **飛天出門 is exactly 2%**. Default about every **2 hours**; 30m / 1h / 2h / 4h plus a demo interval. Toggle on/off. **預覽動作 / Preview action** forces a roll in the app. After a trial expires, the widget still shows a resting pet (basic idle); premium poses need Plus.
+- **Undo / reset** and **save to Photos** (save stays free).
 - **Tutorial** on first launch, replayable from home.
+- **PetPaper Plus:** auto-renewable monthly subscription (see below).
+
+---
+
+## PetPaper Plus (freemium)
+
+The app download is free. Full access runs during a **1-month free trial**, then **US$0.99 / month** (Apple’s standard tier closest to US$1; marketing can say “about US$1/month”).
+
+| Always free | Plus (trial or paid) |
+| --- | --- |
+| Browse all templates | Photo cutout import |
+| Basic editor + **tabby cat** | All other illustrated pets |
+| Follow mode + save wallpaper | In-app idle activities + fly-out / zoomies / sleep |
+| Tutorial + Home Screen widget at **rest** | Widget premium poses (`canUsePremiumMotion()`) |
+
+Locked controls show a **Plus** badge and open a bilingual paywall (zh-Hant + English) with Subscribe, Restore Purchases, and Not now. Home shows a soft upgrade banner when Plus is inactive.
+
+**Product ID (placeholder):** `com.eric1020.petpaper.plus.monthly`  
+**Entitlement:** PetPaper Plus / 寵物壁紙 Plus  
+**Client-only:** the app trusts `Transaction.currentEntitlements`. Receipts are not stored. The app writes a derived `petpaper.hasPlusAccess` flag in the App Group so the widget can show rest vs premium poses without a receipt server.
+
+### Price in StoreKit vs App Store Connect
+
+- **`PetPaper/Products.storekit`** uses monthly **$0.99** plus a **1-month free trial** (`paymentMode: free`, period `P1M`).
+- **$1.00 USD is not a standard US price tier.** In [App Store Connect](https://appstoreconnect.apple.com) set the subscription to **$0.99 USD** monthly (Tier 1). If Apple later allows a $1.00 tier in a given storefront, you may use that; keep the product ID the same.
+- The paywall shows StoreKit’s localized `displayPrice` (falls back to `US$0.99` if products fail to load).
+
+### Local testing (Xcode StoreKit Configuration)
+
+The **PetPaper** scheme already points at `PetPaper/Products.storekit`. To confirm or re-attach it:
+
+1. Open `PetPaper.xcodeproj`.
+2. Product → Scheme → Edit Scheme → **Run** → Options → **StoreKit Configuration** → `Products.storekit`.
+3. Repeat under **Test** if you add unit tests.
+4. Run on Simulator. Debug → StoreKit → Manage Transactions to expire the trial, refund, or speed up renewal.
+
+Without that file selected, `Product.products` returns nothing and purchase shows a load error. Device testing against App Store Connect sandbox does **not** use the `.storekit` file — create the same product ID in App Store Connect instead.
+
+More device/Simulator steps: **[QA.md](QA.md)**.
+
+### App Store Connect — create the subscription
+
+Complete these before TestFlight / App Store (not needed for `.storekit` Simulator testing):
+
+1. **Paid Apps Agreement** (and banking / tax) in App Store Connect → Business. In-app purchases will not go live without it.
+2. Confirm the **App ID** has **In-App Purchase** (Xcode Signing & Capabilities → In-App Purchase, or Developer portal).
+3. App Store Connect → your app → **Subscriptions** → create a **subscription group** named **PetPaper Plus** (or 寵物壁紙 Plus).
+4. Add an auto-renewable subscription:
+   - Product ID: `com.eric1020.petpaper.plus.monthly`
+   - Duration: **1 month**
+   - Price: **$0.99 USD** (and localize other storefronts as you like)
+   - Introductory offer: **Free** for **1 month**, new subscribers
+5. Localization: display name **PetPaper Plus Monthly** / **寵物壁紙 Plus 每月**.
+6. Review screenshot of the paywall (Apple requires IAP review screenshots).
+7. App Privacy / nutrition labels: this app does **not** collect Purchase History on its own servers (StoreKit talks to Apple). Photos remain picker + add-only save. Host a privacy policy URL and keep the in-app Privacy sheet until that URL exists. Guideline 3.1.2 also needs a functional **Terms of Use** link — the paywall uses [Apple’s Standard EULA](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/).
+8. App Review notes: mention StoreKit 2, product ID, 1-month free trial then $0.99/month, Restore Purchases on the paywall.
 
 ---
 
@@ -116,14 +176,15 @@ Use this as a high-level list, not a substitute for Apple’s current review gui
 2. **Bundle ID** matches App Store Connect (change the placeholder). Also change `com.eric1020.petpaper.widget` and App Group `group.com.eric1020.petpaper` to IDs you own, then enable App Groups on both App IDs.
 3. **Signing:** Release archive with your distribution certificate / App Store profile (Automatic signing is fine).
 4. **Version:** `MARKETING_VERSION` 1.0 and `CURRENT_PROJECT_VERSION` 1 (bump build for each upload).
-5. **Privacy:** Photos picker + add-only save. Cutout is on-device Vision only. Do **not** declare full Photo Library read in Privacy Nutrition Labels — `NSPhotoLibraryUsageDescription` was dropped because PHPicker does not need it. Confirm App Privacy matches Info.plist (`NSPhotoLibraryAddUsageDescription` only).
+5. **Privacy:** Photos picker + add-only save. Cutout is on-device Vision only. Do **not** declare full Photo Library read in Privacy Nutrition Labels — `NSPhotoLibraryUsageDescription` was dropped because PHPicker does not need it. Confirm App Privacy matches Info.plist (`NSPhotoLibraryAddUsageDescription` only). Do **not** declare Purchase History unless you start collecting it yourself (StoreKit 2 is client-side only).
 6. **Privacy manifest:** `PrivacyInfo.xcprivacy` declares UserDefaults reason `CA92.1` (tutorial completion flag).
-7. **Icons:** replace the placeholder 1024×1024 `AppIcon` if you want a custom marketing icon. iOS app icons must be opaque.
-8. **Screenshots:** capture iPhone 6.7" (and any other required sizes) of home, editor, follow mode, and export.
-9. **Description:** mention 寵物壁紙 / PetPaper, cat & dog wallpapers, no account required.
-10. **Age rating:** typical 4+ for this kind of app; complete the questionnaire honestly.
-11. **Product page:** localized zh-Hant + English recommended.
-12. **Archive:** Product → Archive → Distribute App → App Store Connect.
+7. **Subscriptions:** Paid Apps Agreement, subscription group, product `com.eric1020.petpaper.plus.monthly`, $0.99 USD monthly, 1-month free trial (see **PetPaper Plus** above).
+8. **Icons:** replace the placeholder 1024×1024 `AppIcon` if you want a custom marketing icon. iOS app icons must be opaque.
+9. **Screenshots:** capture iPhone 6.7" (and any other required sizes) of home, editor, follow mode, export, and the Plus paywall.
+10. **Description:** mention 寵物壁紙 / PetPaper, cat & dog wallpapers, no account required, optional PetPaper Plus (~US$1/month after a 1-month trial).
+11. **Age rating:** typical 4+ for this kind of app; complete the questionnaire honestly.
+12. **Product page:** localized zh-Hant + English recommended. Include privacy policy URL + EULA.
+13. **Archive:** Product → Archive → Distribute App → App Store Connect. For release archives, clear the scheme’s StoreKit Configuration so the build talks to App Store / sandbox, not the local `.storekit` file.
 
 Replace the generated paw-print icon and review copy before submitting if you want a stronger brand identity.
 

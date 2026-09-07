@@ -94,6 +94,37 @@ In-app preview (editor canvas / home cards) plus a WidgetKit extension **桌面�
 
 New keys (zh-Hant + en): … idle.*, `editor.tool.idle`, `widget.displayName`, `widget.description`, `widget.pet*`, `widget.template*`, `widget.interval.appSetting`, `widget.idle.appSetting`, `widget.install.*`.
 
-Updated: `idle.wallpaperNote`.
+Plus / paywall keys (this pass): `paywall.*`, `plus.badge`, `home.plus.*`, `home.upload.locked`, `editor.pet.freeHint`, `a11y.plus.locked`, `a11y.paywall.*`, `a11y.pet.hint`, `idle.locked`.
 
-UserDefaults / App Group keys: `petpaper.hasCompletedTutorial`, `petpaper.lastTemplate`, `petpaper.lastPetID`, `petpaper.idleEnabled`, `petpaper.idleInterval`, `petpaper.idleToast`, `petpaper.usesPhotoPet` (privacy manifest reason **CA92.1**). App Group `group.com.eric1020.petpaper`.
+Updated: `export.success.message`, `a11y.trail.hint`, `idle.wallpaperNote`.
+
+UserDefaults / App Group keys: `petpaper.hasCompletedTutorial`, `petpaper.lastTemplate`, `petpaper.lastPetID`, `petpaper.idleEnabled`, `petpaper.idleInterval`, `petpaper.idleToast`, `petpaper.usesPhotoPet`, `petpaper.hasPlusAccess` (privacy manifest reason **CA92.1**). App Group `group.com.eric1020.petpaper`. Plus **receipts** are not stored — `hasPlusAccess` is a derived widget cache of StoreKit `Transaction.currentEntitlements`.
+
+## PetPaper Plus / StoreKit (this pass)
+
+Linux cannot run Simulator StoreKit. Walk the code, then verify on a Mac as below.
+
+### Model
+
+- Download free. `SubscriptionManager` loads `com.eric1020.petpaper.plus.monthly`, purchases with StoreKit 2, restores via `AppStore.sync()`, and listens to `Transaction.updates`.
+- Trial or subscribed → `hasPlusAccess`. After expiry without renewal: templates + tabby cat + Follow + save + resting Home Screen widget remain; photo import, extra pets, in-app idle activities, and widget premium poses lock (`canUsePremiumMotion()`).
+- Price in `Products.storekit` is **$0.99 / month** with a **1-month free** introductory offer. App Store Connect should use the **$0.99 USD** tier (closest to US$1). No third-party IAP SDK.
+
+### Xcode `.storekit` scheme
+
+1. Open `PetPaper.xcodeproj`. The shared **PetPaper** scheme’s Run (and Test) actions already reference `PetPaper/Products.storekit`.
+2. Confirm: Product → Scheme → Edit Scheme → Run → Options → StoreKit Configuration = **Products.storekit**.
+3. Run on Simulator. Home should show the Plus banner (no entitlement yet).
+4. Tap the banner or a locked photo-import / extra-pet / idle-preview control. Paywall must show localized price (or `US$0.99` fallback), 1-month trial, Subscribe / Restore / Not now, legal auto-renew copy, EULA + privacy.
+5. Subscribe with the StoreKit test sheet. After success, banner switches to Plus, photo import, extra pets, idle activities, and widget premium poses unlock.
+6. Debug → StoreKit → Manage Transactions: expire / refund the subscription and confirm locks return (tabby + save + resting widget still work). Speed up renewal to watch the trial convert to paid.
+7. Restore Purchases with no transaction → “nothing to restore”. With a transaction on the Apple ID → Plus unlocks.
+8. For TestFlight / sandbox, **remove** the StoreKit Configuration from the scheme (or use a scheme without it) so the app uses App Store Connect products.
+
+### Device / Simulator checks still needed on a Mac
+
+- Paywall Dynamic Type XXL and VoiceOver on Subscribe / Restore / locked pet cells.
+- Nested editor pet sheet: locked pet dismisses the picker then shows the paywall.
+- Tutorial pet grid locks extra pets and can still finish with the tabby cat.
+- Idle toggle / preview without Plus opens the paywall; widget stays at rest.
+- Sandbox Apple ID: intro-offer eligibility only once per subscription group.

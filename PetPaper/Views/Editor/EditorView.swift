@@ -3,6 +3,7 @@ import UIKit
 
 struct EditorView: View {
     @Environment(AppSession.self) private var session
+    @Environment(SubscriptionManager.self) private var subscriptions
     @State private var store: EditorStore
     @State private var activeSheet: EditorSheet?
     @State private var isExporting = false
@@ -36,6 +37,7 @@ struct EditorView: View {
                 onDelete: store.removeSelected,
                 onOpen: { activeSheet = $0 },
                 onPreviewIdle: {
+                    guard subscriptions.requestPremiumMotion() else { return }
                     store.idle.showToast = session.idleToastEnabled
                     store.previewIdleAction()
                 }
@@ -107,8 +109,15 @@ struct EditorView: View {
         .onChange(of: store.state.usesPhotoPet) { _, _ in
             rememberDraft()
         }
+        .onChange(of: subscriptions.hasPlusAccess) { _, hasPlus in
+            store.applyFreeTierIfNeeded(hasPlusAccess: hasPlus)
+            if !hasPlus {
+                store.idle.cancel()
+            }
+        }
         .onAppear {
             hueDraft = store.state.hueShift
+            store.applyFreeTierIfNeeded(hasPlusAccess: subscriptions.hasPlusAccess)
             rememberDraft()
             store.idle.showToast = session.idleToastEnabled
         }
@@ -116,13 +125,13 @@ struct EditorView: View {
             store.idle.showToast = enabled
         }
         .task(id: editorIdleTaskID) {
-            guard session.idleEnabled, scenePhase == .active else { return }
+            guard session.idleEnabled, subscriptions.canUsePremiumMotion(), scenePhase == .active else { return }
             store.idle.showToast = session.idleToastEnabled
             await store.idle.runScheduledLoop(
                 interval: session.idleInterval.seconds,
                 cooldown: session.idleInterval.cooldown,
                 photoCutout: { store.usesPhotoPetNow },
-                shouldPause: { store.state.followMode || store.isFollowingTouch }
+                shouldPause: { store.state.followMode || store.isFollowingTouch || !subscriptions.canUsePremiumMotion() }
             )
         }
         .onDisappear {
@@ -131,7 +140,7 @@ struct EditorView: View {
     }
 
     private var editorIdleTaskID: String {
-        "\(session.idleEnabled)-\(session.idleInterval.rawValue)-\(scenePhase)"
+        "\(session.idleEnabled)-\(session.idleInterval.rawValue)-\(scenePhase)-\(subscriptions.hasPlusAccess)"
     }
 
     private var canvasCard: some View {
@@ -190,6 +199,12 @@ struct EditorView: View {
             } onPickPhoto: {
                 store.restorePhotoPet()
                 activeSheet = nil
+            } onNeedPlus: {
+                activeSheet = nil
+                Task { @MainActor in
+                    try? await Task.sleep(for: .milliseconds(400))
+                    subscriptions.presentPaywall()
+                }
             }
         case .sticker:
             StickerPickerSheet { kind in
@@ -215,6 +230,7 @@ struct EditorView: View {
         case .idle:
             IdleSettingsSheet(
                 onPreview: {
+                    guard subscriptions.requestPremiumMotion() else { return }
                     store.idle.showToast = session.idleToastEnabled
                     store.previewIdleAction()
                 },
@@ -461,6 +477,8 @@ struct PetPickerSheet: View {
     var usesPhotoPet: Bool
     var onPick: (PetCharacter) -> Void
     var onPickPhoto: () -> Void
+    var onNeedPlus: () -> Void
+    @Environment(SubscriptionManager.self) private var subscriptions
     @State private var species: PetSpecies = .cat
 
     var body: some View {
@@ -474,53 +492,58 @@ struct PetPickerSheet: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
 
+                Text("editor.pet.freeHint")
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.muted)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                         if let photoPet {
-                            Button(action: onPickPhoto) {
-                                VStack(spacing: 8) {
+                            Button {
+                                if subscriptions.hasPlusAccess {
+                                    onPickPhoto()
+                                } else {
+                                    onNeedPlus()
+                                }
+                            } label: {
+                                petCell(
+                                    titleKey: "editor.photoPet",
+                                    selected: usesPhotoPet,
+                                    locked: !subscriptions.hasPlusAccess
+                                ) {
                                     PhotoPetView(cutout: photoPet)
                                         .frame(height: 140)
-                                    Text("editor.photoPet")
-                                        .font(.subheadline.weight(.semibold))
-                                        .foregroundStyle(AppTheme.ink)
-                                }
-                                .padding(8)
-                                .frame(maxWidth: .infinity)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                        .fill(Color.white)
-                                )
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 18)
-                                        .strokeBorder(usesPhotoPet ? AppTheme.coral : Color.clear, lineWidth: 3)
                                 }
                             }
                             .buttonStyle(.plain)
+                            .accessibilityHint(Text(subscriptions.hasPlusAccess ? "a11y.pet.hint" : "home.upload.locked"))
                         }
                         ForEach(PetCharacter.catalog.filter { $0.species == species }) { pet in
+                            let locked = !subscriptions.isPetUnlocked(pet.id)
                             Button {
-                                onPick(pet)
+                                if subscriptions.isPetUnlocked(pet.id) {
+                                    onPick(pet)
+                                } else {
+                                    onNeedPlus()
+                                }
                             } label: {
-                                VStack(spacing: 8) {
+                                petCell(
+                                    titleKey: pet.nameKey,
+                                    selected: !usesPhotoPet && pet.id == currentID,
+                                    locked: locked
+                                ) {
                                     PetIllustration(character: pet)
                                         .frame(height: 140)
-                                    Text(LocalizedStringKey(pet.nameKey))
-                                        .font(.subheadline.weight(.semibold))
-                                        .foregroundStyle(AppTheme.ink)
-                                }
-                                .padding(8)
-                                .frame(maxWidth: .infinity)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                        .fill(Color.white)
-                                )
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 18)
-                                        .strokeBorder(!usesPhotoPet && pet.id == currentID ? AppTheme.coral : Color.clear, lineWidth: 3)
+                                        .opacity(locked ? 0.55 : 1)
                                 }
                             }
                             .buttonStyle(.plain)
+                            .accessibilityLabel(Text(LocalizedStringKey(pet.nameKey)))
+                            .accessibilityHint(Text(locked ? "a11y.plus.locked" : "a11y.pet.hint"))
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityAddTraits(!usesPhotoPet && pet.id == currentID ? .isSelected : [])
                         }
                     }
                     .padding(16)
@@ -530,6 +553,31 @@ struct PetPickerSheet: View {
             .navigationTitle(Text("editor.tool.pet"))
             .onAppear {
                 species = PetCharacter.character(id: currentID).species
+            }
+        }
+    }
+
+    private func petCell<Content: View>(titleKey: String, selected: Bool, locked: Bool, @ViewBuilder content: () -> Content) -> some View {
+        ZStack(alignment: .topTrailing) {
+            VStack(spacing: 8) {
+                content()
+                Text(LocalizedStringKey(titleKey))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(AppTheme.ink)
+            }
+            .padding(8)
+            .frame(maxWidth: .infinity)
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(Color.white)
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: 18)
+                    .strokeBorder(selected && !locked ? AppTheme.coral : Color.clear, lineWidth: 3)
+            }
+            if locked {
+                PlusLockBadge()
+                    .padding(10)
             }
         }
     }
@@ -687,4 +735,5 @@ struct TextEditorSheet: View {
         EditorView(template: .pastel, petID: "cat-tabby")
     }
     .environment(AppSession())
+    .environment(SubscriptionManager())
 }

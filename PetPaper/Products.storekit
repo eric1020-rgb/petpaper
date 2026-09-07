@@ -1,0 +1,86 @@
+{
+  "identifier" : "A8E31C90",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_storeKitErrorsEnabled" : false,
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "B7D42E15",
+      "localizations" : [
+        {
+          "description" : "Photo cutouts, extra illustrated pets, and premium widget poses.",
+          "displayName" : "PetPaper Plus",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "解鎖照片去背、更多插畫寵物，以及小工具進階動態。",
+          "displayName" : "寵物壁紙 Plus",
+          "locale" : "zh_Hant"
+        }
+      ],
+      "name" : "PetPaper Plus",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "C1F58A27",
+          "introductoryOffer" : {
+            "displayPrice" : "0.00",
+            "internalID" : "D9A64B03",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1M"
+          },
+          "introductoryOffers" : [
+            {
+              "displayPrice" : "0.00",
+              "internalID" : "D9A64B03",
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "subscriptionPeriod" : "P1M"
+            }
+          ],
+          "localizations" : [
+            {
+              "description" : "Full PetPaper Plus access. 1-month free trial, then US$0.99 per month.",
+              "displayName" : "PetPaper Plus Monthly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "寵物壁紙 Plus 完整功能。一個月免費試用，其後每月 US$0.99。",
+              "displayName" : "寵物壁紙 Plus 每月",
+              "locale" : "zh_Hant"
+            }
+          ],
+          "productID" : "com.eric1020.petpaper.plus.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "PetPaper Plus Monthly",
+          "subscriptionGroupID" : "B7D42E15",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

@@ -16,6 +16,8 @@
 		AE997A2527C4C81446BC0676 /* WallpaperExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665D0C8F67DCEA75F0E7ED66 /* WallpaperExporter.swift */; };
 		F742FF9922CA2B0E0E809AA7 /* AppSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E40A88AF0EC64A3F91F404E /* AppSession.swift */; };
 		74D67C6B4853BB5A3680B80A /* EditorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BBEEC93469BF0D577F0F69 /* EditorStore.swift */; };
+		3D8F21C0A94B7E16D52F8A01 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E91A2B8D03F15E64A2C90 /* SubscriptionManager.swift */; };
+		4A7C90E1B2D35F48C61A8E03 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1B47C3D0A85F24B63C9D12 /* PaywallView.swift */; };
 		03F3CA89C1C2219604F70F5D /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955ACF5E53C582A49138ADA /* AppTheme.swift */; };
 		94B693F5B36FE8EB3A302BBD /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3A7AA774288B3E3095DCD4 /* EditorView.swift */; };
 		FEBF1B484514A6E354202E55 /* WallpaperCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53E73CA90C452C709FBD5F92 /* WallpaperCanvasView.swift */; };
@@ -68,6 +70,9 @@
 		665D0C8F67DCEA75F0E7ED66 /* WallpaperExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperExporter.swift; sourceTree = "<group>"; };
 		8E40A88AF0EC64A3F91F404E /* AppSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSession.swift; sourceTree = "<group>"; };
 		69BBEEC93469BF0D577F0F69 /* EditorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorStore.swift; sourceTree = "<group>"; };
+		7C4E91A2B8D03F15E64A2C90 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
+		9E1B47C3D0A85F24B63C9D12 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		5B8D12F4A0C37E19D64B2A55 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Products.storekit; sourceTree = "<group>"; };
 		5955ACF5E53C582A49138ADA /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		DC3A7AA774288B3E3095DCD4 /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		53E73CA90C452C709FBD5F92 /* WallpaperCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperCanvasView.swift; sourceTree = "<group>"; };
@@ -145,6 +150,7 @@
 				F8B084301594EAC5A34D23B9 /* Theme */,
 				43B428327CE75128E6D52001 /* Views */,
 				D0D4344AB022A0DCEEAB2CF0 /* Assets.xcassets */,
+				5B8D12F4A0C37E19D64B2A55 /* Products.storekit */,
 				53FD71E7C57E1D088FFB2731 /* Localizable.xcstrings */,
 				8F0EE59DB94F9B36559A4284 /* InfoPlist.xcstrings */,
 				5994963D1B3A3BCB44C1F943 /* PrivacyInfo.xcprivacy */,
@@ -183,6 +189,7 @@
 				8E40A88AF0EC64A3F91F404E /* AppSession.swift */,
 				69BBEEC93469BF0D577F0F69 /* EditorStore.swift */,
 				7C1A9E04B2D14F8A91C33E02 /* PetIdleDirector.swift */,
+				7C4E91A2B8D03F15E64A2C90 /* SubscriptionManager.swift */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -217,8 +224,17 @@
 				88C63C820B8551EC2A1A4CAA /* Stickers */,
 				69A01ED20980BE051BA4F378 /* Import */,
 				7C1A9E04B2D14F8A91C33E10 /* Idle */,
+				A4C81E90D2B47F35C70A1E44 /* Paywall */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		A4C81E90D2B47F35C70A1E44 /* Paywall */ = {
+			isa = PBXGroup;
+			children = (
+				9E1B47C3D0A85F24B63C9D12 /* PaywallView.swift */,
+			);
+			path = Paywall;
 			sourceTree = "<group>";
 		};
 		4BA81F2252D6F9A017CBF1FA /* Home */ = {
@@ -437,6 +453,8 @@
 				AE997A2527C4C81446BC0676 /* WallpaperExporter.swift in Sources */,
 				F742FF9922CA2B0E0E809AA7 /* AppSession.swift in Sources */,
 				74D67C6B4853BB5A3680B80A /* EditorStore.swift in Sources */,
+				3D8F21C0A94B7E16D52F8A01 /* SubscriptionManager.swift in Sources */,
+				4A7C90E1B2D35F48C61A8E03 /* PaywallView.swift in Sources */,
 				03F3CA89C1C2219604F70F5D /* AppTheme.swift in Sources */,
 				94B693F5B36FE8EB3A302BBD /* EditorView.swift in Sources */,
 				FEBF1B484514A6E354202E55 /* WallpaperCanvasView.swift in Sources */,

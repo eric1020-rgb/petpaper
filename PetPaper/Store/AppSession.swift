@@ -83,10 +83,13 @@ final class AppSession {
         AppGroupStore.idleToastEnabled = idleToastEnabled
     }
 
-    func openEditor(template: TemplateKind, petID: String? = nil) {
+    func openEditor(template: TemplateKind, petID: String? = nil, hasPlusAccess: Bool = false) {
         pendingPhotoPet = nil
-        let resolvedPet = Self.validatedPetID(petID ?? lastPetID)
-        remember(template: template, petID: resolvedPet)
+        if let petID, PetCharacter.catalog.contains(where: { $0.id == petID }) {
+            lastPetID = petID
+        }
+        let resolvedPet = PetCharacter.resolvedID(lastPetID, hasPlusAccess: hasPlusAccess)
+        remember(template: template, petID: resolvedPet, usesPhotoPet: false)
         path.append(EditorRoute(template: template, petID: resolvedPet, usesPhotoPet: false))
     }
 
@@ -117,10 +120,10 @@ final class AppSession {
     }
 
     /// Last-step CTA: remember completion and open the editor with the user's picks.
-    func finishTutorial(template: TemplateKind, petID: String) {
+    func finishTutorial(template: TemplateKind, petID: String, hasPlusAccess: Bool) {
         hasCompletedTutorial = true
         presentedCover = nil
-        openEditor(template: template, petID: petID)
+        openEditor(template: template, petID: petID, hasPlusAccess: hasPlusAccess)
     }
 
     func replayTutorial() {
@@ -141,7 +144,7 @@ final class AppSession {
         AppGroupStore.reloadDesktopPetWidget()
     }
 
-    func handleDeepLink(_ url: URL) {
+    func handleDeepLink(_ url: URL, hasPlusAccess: Bool = false) {
         guard url.scheme == AppGroupStore.urlScheme else { return }
         presentedCover = nil
         var template = lastTemplate
@@ -156,12 +159,12 @@ final class AppSession {
             }
         }
         if path.isEmpty {
-            if AppGroupStore.usesPhotoPet, let cutout = AppGroupStore.loadPhotoCutout() {
+            if hasPlusAccess, AppGroupStore.usesPhotoPet, let cutout = AppGroupStore.loadPhotoCutout() {
                 pendingPhotoPet = cutout
                 remember(template: template, petID: nil, usesPhotoPet: true)
                 path.append(EditorRoute(template: template, petID: nil, usesPhotoPet: true))
             } else {
-                openEditor(template: template, petID: petID)
+                openEditor(template: template, petID: petID, hasPlusAccess: hasPlusAccess)
             }
         }
     }
@@ -173,10 +176,7 @@ final class AppSession {
     }
 
     private static func validatedPetID(_ petID: String?) -> String {
-        if let petID, PetCharacter.catalog.contains(where: { $0.id == petID }) {
-            return petID
-        }
-        return PetCharacter.catalog[0].id
+        PetCharacter.resolvedID(petID, hasPlusAccess: true)
     }
 
     private static let tutorialKey = "petpaper.hasCompletedTutorial"

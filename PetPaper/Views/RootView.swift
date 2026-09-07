@@ -2,8 +2,10 @@ import SwiftUI
 
 struct RootView: View {
     @Bindable var session: AppSession
+    @Environment(SubscriptionManager.self) private var subscriptions
 
     var body: some View {
+        @Bindable var subscriptions = subscriptions
         NavigationStack(path: $session.path) {
             HomeView()
                 .navigationDestination(for: EditorRoute.self) { route in
@@ -32,6 +34,10 @@ struct RootView: View {
                 }
             }
         }
+        .sheet(isPresented: paywallFromRoot) {
+            PaywallView()
+                .environment(subscriptions)
+        }
         .onChange(of: session.presentedCover) { _, cover in
             if cover != .photoImport {
                 session.importSourceImage = nil
@@ -40,6 +46,27 @@ struct RootView: View {
         .onChange(of: session.path) { _, path in
             session.clearPendingPhotoPetIfNeeded(for: path)
         }
+        .onChange(of: subscriptions.hasPlusAccess) { _, hasPlus in
+            if !hasPlus, session.presentedCover == .photoImport {
+                session.dismissPhotoImport()
+            }
+        }
+    }
+
+    /// Avoid competing with the tutorial / import fullScreenCover.
+    private var paywallFromRoot: Binding<Bool> {
+        Binding(
+            get: { subscriptions.isPaywallPresented && session.presentedCover == nil },
+            set: { newValue in
+                if newValue {
+                    if session.presentedCover == nil {
+                        subscriptions.presentPaywall()
+                    }
+                } else {
+                    subscriptions.dismissPaywall()
+                }
+            }
+        )
     }
 }
 

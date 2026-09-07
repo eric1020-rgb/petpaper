@@ -5,6 +5,7 @@ import CoreTransferable
 
 struct HomeView: View {
     @Environment(AppSession.self) private var session
+    @Environment(SubscriptionManager.self) private var subscriptions
     @Environment(\.scenePhase) private var scenePhase
     @State private var pickedItem: PhotosPickerItem?
     @State private var lastPickedItem: PhotosPickerItem?
@@ -16,6 +17,7 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 header
+                plusBanner
                 uploadCard
                 Text("home.upload.emptyTip")
                     .font(.footnote)
@@ -27,6 +29,7 @@ struct HomeView: View {
                 }
                 tutorialCard
                 IdleSettingsCard(idle: homeIdle) {
+                    guard subscriptions.requestPremiumMotion() else { return }
                     homeIdle.showToast = session.idleToastEnabled
                     homeIdle.anchorPosition = CGPoint(x: 0.5, y: 0.72)
                     homeIdle.playRandom(photoCutout: false)
@@ -39,7 +42,7 @@ struct HomeView: View {
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {
                     ForEach(TemplateKind.allCases) { template in
                         Button {
-                            session.openEditor(template: template)
+                            session.openEditor(template: template, hasPlusAccess: subscriptions.hasPlusAccess)
                         } label: {
                             TemplateCard(
                                 template: template,
@@ -79,14 +82,14 @@ struct HomeView: View {
             homeIdle.showToast = enabled
         }
         .task(id: homeIdleTaskID) {
-            guard session.path.isEmpty, session.idleEnabled, scenePhase == .active else { return }
+            guard session.path.isEmpty, session.idleEnabled, subscriptions.canUsePremiumMotion(), scenePhase == .active else { return }
             homeIdle.showToast = session.idleToastEnabled
             homeIdle.anchorPosition = CGPoint(x: 0.5, y: 0.72)
             await homeIdle.runScheduledLoop(
                 interval: session.idleInterval.seconds,
                 cooldown: session.idleInterval.cooldown,
                 photoCutout: { false },
-                shouldPause: { !session.path.isEmpty }
+                shouldPause: { !session.path.isEmpty || !subscriptions.canUsePremiumMotion() }
             )
         }
         .onChange(of: session.path.count) { _, count in
@@ -94,10 +97,15 @@ struct HomeView: View {
                 homeIdle.cancel()
             }
         }
+        .onChange(of: subscriptions.hasPlusAccess) { _, hasPlus in
+            if !hasPlus {
+                homeIdle.cancel()
+            }
+        }
     }
 
     private var homeIdleTaskID: String {
-        "\(session.idleEnabled)-\(session.idleInterval.rawValue)-\(session.path.count)-\(scenePhase)"
+        "\(session.idleEnabled)-\(session.idleInterval.rawValue)-\(session.path.count)-\(scenePhase)-\(subscriptions.hasPlusAccess)"
     }
 
     private var header: some View {
@@ -113,44 +121,136 @@ struct HomeView: View {
         .padding(.top, 12)
     }
 
-    private var uploadCard: some View {
-        PhotosPicker(selection: $pickedItem, matching: .images) {
-            HStack(spacing: 14) {
-                ZStack {
-                    Image(systemName: "photo.on.rectangle.angled")
-                        .font(.title2)
+    @ViewBuilder
+    private var plusBanner: some View {
+        switch subscriptions.plusStatus {
+        case .loading:
+            EmptyView()
+        case .inactive:
+            Button {
+                subscriptions.presentPaywall()
+            } label: {
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "sparkles")
+                        .font(.title3)
                         .foregroundStyle(.white)
-                    if isLoadingPhoto {
-                        ProgressView()
-                            .tint(.white)
+                        .frame(width: 40, height: 40)
+                        .background(AppTheme.coral)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("home.plus.banner.title")
+                            .font(.headline)
+                            .foregroundStyle(AppTheme.ink)
+                        Text("home.plus.banner.body")
+                            .font(.footnote)
+                            .foregroundStyle(AppTheme.muted)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
+                    Spacer(minLength: 0)
+                    Text("home.plus.banner.cta")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(AppTheme.coral)
                 }
-                .frame(width: 48, height: 48)
-                .background(AppTheme.sky)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("home.upload.title")
-                        .font(.headline)
+                .padding(14)
+                .background(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 20)
+            .accessibilityHint(Text("a11y.paywall.open"))
+        case .trial, .subscribed:
+            Button {
+                subscriptions.presentPaywall()
+            } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: "checkmark.seal.fill")
+                        .foregroundStyle(AppTheme.coral)
+                    Text(LocalizedStringKey(subscriptions.plusStatus == .trial ? "home.plus.active.trial" : "home.plus.active.subscribed"))
+                        .font(.subheadline.weight(.semibold))
                         .foregroundStyle(AppTheme.ink)
-                    Text("home.upload.caption")
-                        .font(.footnote)
-                        .foregroundStyle(AppTheme.muted)
+                    Spacer()
+                    Text("plus.badge")
+                        .font(.caption2.weight(.bold))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(AppTheme.coral.opacity(0.15))
+                        .foregroundStyle(AppTheme.coral)
+                        .clipShape(Capsule())
                 }
-                Spacer()
+                .padding(14)
+                .background(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .shadow(color: .black.opacity(0.04), radius: 6, y: 3)
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 20)
+            .accessibilityHint(Text("a11y.paywall.open"))
+        }
+    }
+
+    @ViewBuilder
+    private var uploadCard: some View {
+        let label = uploadCardLabel(locked: !subscriptions.hasPlusAccess)
+        if subscriptions.hasPlusAccess {
+            PhotosPicker(selection: $pickedItem, matching: .images) {
+                label
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 20)
+            .disabled(isLoadingPhoto)
+            .accessibilityLabel(Text("home.upload.title"))
+            .accessibilityHint(Text("a11y.upload.hint"))
+            .accessibilityValue(Text(isLoadingPhoto ? "import.processing" : "home.upload.caption"))
+        } else {
+            Button {
+                subscriptions.presentPaywall()
+            } label: {
+                label
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 20)
+            .accessibilityLabel(Text("home.upload.title"))
+            .accessibilityHint(Text("home.upload.locked"))
+        }
+    }
+
+    private func uploadCardLabel(locked: Bool) -> some View {
+        HStack(spacing: 14) {
+            ZStack {
+                Image(systemName: "photo.on.rectangle.angled")
+                    .font(.title2)
+                    .foregroundStyle(.white)
+                if isLoadingPhoto {
+                    ProgressView()
+                        .tint(.white)
+                }
+            }
+            .frame(width: 48, height: 48)
+            .background(AppTheme.sky)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            VStack(alignment: .leading, spacing: 4) {
+                Text("home.upload.title")
+                    .font(.headline)
+                    .foregroundStyle(AppTheme.ink)
+                Text(LocalizedStringKey(locked ? "home.upload.locked" : "home.upload.caption"))
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer()
+            if locked {
+                PlusLockBadge()
+            } else {
                 Image(systemName: "chevron.right")
                     .foregroundStyle(AppTheme.muted)
             }
-            .padding(14)
-            .background(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
         }
-        .buttonStyle(.plain)
-        .padding(.horizontal, 20)
-        .disabled(isLoadingPhoto)
-        .accessibilityLabel(Text("home.upload.title"))
-        .accessibilityHint(Text("a11y.upload.hint"))
-        .accessibilityValue(Text(isLoadingPhoto ? "import.processing" : "home.upload.caption"))
+        .padding(14)
+        .background(.white)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
+        .opacity(locked ? 0.92 : 1)
     }
 
     private var retryRow: some View {
@@ -213,7 +313,11 @@ struct HomeView: View {
         if let image = await PhotoPickerLoader.uiImage(from: item) {
             pickedItem = nil
             lastPickedItem = nil
-            session.beginPhotoImport(image)
+            if subscriptions.hasPlusAccess {
+                session.beginPhotoImport(image)
+            } else {
+                subscriptions.presentPaywall()
+            }
             return
         }
         pickedItem = nil
@@ -330,4 +434,5 @@ struct TemplateCard: View {
         HomeView()
     }
     .environment(AppSession())
+    .environment(SubscriptionManager())
 }

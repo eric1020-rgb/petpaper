@@ -16,6 +16,7 @@ enum AppGroupStore {
     static let idleIntervalKey = "petpaper.idleInterval"
     static let idleToastKey = "petpaper.idleToast"
     static let usesPhotoPetKey = "petpaper.usesPhotoPet"
+    static let hasPlusAccessKey = "petpaper.hasPlusAccess"
     static let photoShadowKey = "petpaper.photoShadow"
     static let photoTintKey = "petpaper.photoTint"
 
@@ -60,6 +61,12 @@ enum AppGroupStore {
     static var usesPhotoPet: Bool {
         get { defaults.bool(forKey: usesPhotoPetKey) }
         set { defaults.set(newValue, forKey: usesPhotoPetKey) }
+    }
+
+    /// Derived widget cache of StoreKit Plus — not a receipt.
+    static var hasPlusAccess: Bool {
+        get { defaults.bool(forKey: hasPlusAccessKey) }
+        set { defaults.set(newValue, forKey: hasPlusAccessKey) }
     }
 
     static func savePhotoCutout(_ cutout: PhotoPetCutout) {

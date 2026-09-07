@@ -282,7 +282,28 @@ struct PetCharacter: Identifiable, Hashable {
         )
     ]
 
+    /// Illustrated pet available after a trial expires without Plus.
+    static let freePetID = "cat-tabby"
+    static let freeIDs: Set<String> = [freePetID]
+
+    static func isFree(_ id: String) -> Bool {
+        freeIDs.contains(id)
+    }
+
     static func character(id: String) -> PetCharacter {
         catalog.first(where: { $0.id == id }) ?? catalog[0]
+    }
+
+    static func resolvedID(_ petID: String?, hasPlusAccess: Bool) -> String {
+        let candidate: String
+        if let petID, catalog.contains(where: { $0.id == petID }) {
+            candidate = petID
+        } else {
+            candidate = freePetID
+        }
+        if hasPlusAccess || isFree(candidate) {
+            return candidate
+        }
+        return freePetID
     }
 }

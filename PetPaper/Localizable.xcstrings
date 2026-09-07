@@ -2992,6 +2992,754 @@
           }
         }
       }
+    },
+    "paywall.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PetPaper Plus"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "寵物壁紙 Plus"
+          }
+        }
+      }
+    },
+    "paywall.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One month free, then about US$1 per month. Cancel anytime."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一個月免費試用，其後大約每月 US$1。可隨時取消。"
+          }
+        }
+      }
+    },
+    "paywall.trial": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1-month free trial"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 個月免費試用"
+          }
+        }
+      }
+    },
+    "paywall.price.monthly": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ / month after the trial"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "試用後每月 %@"
+          }
+        }
+      }
+    },
+    "paywall.renewal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-renews monthly until you cancel in Apple ID settings."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "會按月自動續訂，直到你喺 Apple ID 設定取消。"
+          }
+        }
+      }
+    },
+    "paywall.cta.trial": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start 1-month free trial"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始 1 個月免費試用"
+          }
+        }
+      }
+    },
+    "paywall.cta.subscribe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subscribe for %@ / month"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "以 %@／月訂閱"
+          }
+        }
+      }
+    },
+    "paywall.cta.subscribed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You’re subscribed to Plus"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你已訂閱 Plus"
+          }
+        }
+      }
+    },
+    "paywall.restore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Purchases"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "還原購買"
+          }
+        }
+      }
+    },
+    "paywall.notNow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暫時唔使"
+          }
+        }
+      }
+    },
+    "paywall.plus.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Included with Plus"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus 解鎖"
+          }
+        }
+      }
+    },
+    "paywall.feature.photo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo cutout import — lift your cat or dog from Photos on device"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "照片去背：用你相簿嘅貓狗，喺裝置上取出主體"
+          }
+        }
+      }
+    },
+    "paywall.feature.pets": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every illustrated cat and dog (free tier keeps the tabby cat)"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部插畫寵物（免費保留虎斑貓）"
+          }
+        }
+      }
+    },
+    "paywall.feature.motion": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle activities and Home Screen widget premium poses (when widgets ship)"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閒置動態，以及主畫面小工具進階姿勢（小工具推出後適用）"
+          }
+        }
+      }
+    },
+    "paywall.free.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Always free"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "永遠免費"
+          }
+        }
+      }
+    },
+    "paywall.free.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Browse all templates, basic editor with the tabby cat, Follow mode, save wallpapers, and the tutorial — even after a trial ends."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "試用完都可以繼續：瀏覽全部模板、基本編輯器（虎斑貓）、跟著走、儲存壁紙，同教學。"
+          }
+        }
+      }
+    },
+    "paywall.legal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PetPaper Plus is an auto-renewable subscription. Payment will be charged to your Apple ID account at confirmation of purchase. Subscription automatically renews unless canceled at least 24 hours before the end of the current period. Your account will be charged %@ within 24 hours prior to the end of the current period. Manage or cancel anytime in Settings → Apple ID → Subscriptions. Any unused portion of a free trial is forfeited when you purchase a subscription."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "寵物壁紙 Plus 為自動續訂。確認購買後會向你的 Apple ID 帳戶收費。訂閱會自動續訂，除非你至少在目前期間結束前 24 小時取消。帳戶會在目前期間結束前 24 小時內以 %@ 續訂。你可隨時到「設定」→ Apple ID → 訂閱項目管理或取消。若你購買訂閱，未使用的免費試用期將會作廢。"
+          }
+        }
+      }
+    },
+    "paywall.terms": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terms of Use (EULA)"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用條款（EULA）"
+          }
+        }
+      }
+    },
+    "paywall.privacy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy Policy"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "私隱政策"
+          }
+        }
+      }
+    },
+    "paywall.privacy.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "私隱"
+          }
+        }
+      }
+    },
+    "paywall.privacy.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PetPaper does not create an account and does not run its own purchase server. Subscriptions are processed by Apple through StoreKit. Photo cutouts and wallpaper export stay on device. Saving a wallpaper uses add-only Photos access. We do not collect purchase history on our servers. Replace this in-app summary with a hosted privacy policy URL in App Store Connect before you submit."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "寵物壁紙唔會開帳戶，亦冇自己嘅購買伺服器。訂閱由 Apple 透過 StoreKit 處理。照片去背同匯出壁紙都喺裝置上完成。儲存壁紙只用「加入照片」權限。我哋唔會喺自己伺服器收集購買紀錄。上架前請喺 App Store Connect 改為你嘅私隱政策網址。"
+          }
+        }
+      }
+    },
+    "paywall.error.load": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t load the subscription. Check the StoreKit configuration in the Xcode scheme, then try again."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法載入訂閱方案。請確認 Xcode scheme 已選 StoreKit 設定檔，然後再試。"
+          }
+        }
+      }
+    },
+    "paywall.error.purchase": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The purchase couldn’t be completed. Try again, or Restore Purchases if you already subscribed."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法完成購買。請再試，若你已經訂閱可點「還原購買」。"
+          }
+        }
+      }
+    },
+    "paywall.error.pending": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This purchase is pending approval (for example Ask to Buy)."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "呢次購買待批准（例如「詢問購買」）。"
+          }
+        }
+      }
+    },
+    "paywall.error.unverified": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple couldn’t verify this transaction."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple 無法驗證呢筆交易。"
+          }
+        }
+      }
+    },
+    "paywall.restore.ok.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchases restored"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已還原購買"
+          }
+        }
+      }
+    },
+    "paywall.restore.ok.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PetPaper Plus is unlocked on this Apple ID."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已用呢個 Apple ID 解鎖寵物壁紙 Plus。"
+          }
+        }
+      }
+    },
+    "paywall.restore.none.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing to restore"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有可還原的購買"
+          }
+        }
+      }
+    },
+    "paywall.restore.none.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Plus subscription was found for this Apple ID. You can start the free trial from Subscribe."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "呢個 Apple ID 未有 Plus 訂閱。可喺「訂閱」開始免費試用。"
+          }
+        }
+      }
+    },
+    "plus.badge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus"
+          }
+        }
+      }
+    },
+    "home.plus.banner.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try PetPaper Plus free for 1 month"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免費試用寵物壁紙 Plus 1 個月"
+          }
+        }
+      }
+    },
+    "home.plus.banner.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Then US$0.99 / month. Photo cutouts, extra pets, and premium widget poses. Templates, Follow, and save stay free."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "其後每月 US$0.99。解鎖照片去背、更多寵物，同小工具進階姿勢。模板、跟著走同儲存仍然免費。"
+          }
+        }
+      }
+    },
+    "home.plus.banner.cta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See Plus"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "了解 Plus"
+          }
+        }
+      }
+    },
+    "home.plus.active.trial": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free trial in progress · PetPaper Plus"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免費試用中 · 寵物壁紙 Plus"
+          }
+        }
+      }
+    },
+    "home.plus.active.subscribed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PetPaper Plus is on"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已開啟寵物壁紙 Plus"
+          }
+        }
+      }
+    },
+    "home.upload.locked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo cutout is a Plus feature. Tap to start the free trial."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "照片去背屬 Plus 功能。點一下開始免費試用。"
+          }
+        }
+      }
+    },
+    "editor.pet.freeHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free: tabby cat. Plus unlocks every illustrated pet and photo cutouts."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免費：虎斑貓。Plus 解鎖全部插畫寵物同照片去背。"
+          }
+        }
+      }
+    },
+    "a11y.plus.locked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locked. PetPaper Plus required."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已鎖定。需要寵物壁紙 Plus。"
+          }
+        }
+      }
+    },
+    "a11y.paywall.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the PetPaper Plus subscription screen."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟寵物壁紙 Plus 訂閱畫面。"
+          }
+        }
+      }
+    },
+    "a11y.paywall.dismiss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Closes the subscription screen without buying."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "關閉訂閱畫面，唔購買。"
+          }
+        }
+      }
+    },
+    "a11y.paywall.subscribe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts the free trial or purchases the monthly subscription through Apple."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "經 Apple 開始免費試用或購買每月訂閱。"
+          }
+        }
+      }
+    },
+    "a11y.paywall.restore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restores a Plus subscription already purchased with this Apple ID."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "還原呢個 Apple ID 已購買嘅 Plus 訂閱。"
+          }
+        }
+      }
+    },
+    "a11y.pet.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Places this pet on the wallpaper."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "將呢隻寵物放到壁紙上。"
+          }
+        }
+      }
+    },
+    "idle.locked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle activities and widget premium poses are PetPaper Plus. The Home Screen widget can still sit at rest. US$0.99/month after a 1-month free trial."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閒置動態同小工具進階姿勢屬寵物壁紙 Plus。主畫面小工具仍可靜止休息。一個月免費試用後每月 US$0.99。"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

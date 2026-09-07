@@ -2,12 +2,14 @@ import SwiftUI
 
 struct TutorialView: View {
     @Environment(AppSession.self) private var session
+    @Environment(SubscriptionManager.self) private var subscriptions
     @State private var step = 0
     @State private var template: TemplateKind = .pastel
     @State private var petID = PetCharacter.catalog[0].id
     @State private var demoStore = EditorStore(template: .pastel, petID: PetCharacter.catalog[0].id)
 
     var body: some View {
+        @Bindable var subscriptions = subscriptions
         VStack(spacing: 0) {
             HStack {
                 Button(String(localized: "tutorial.skip")) {
@@ -43,7 +45,7 @@ struct TutorialView: View {
                 Button(step == 4 ? String(localized: "tutorial.start") : String(localized: "tutorial.next")) {
                     if step == 4 {
                         AppHaptics.light()
-                        session.finishTutorial(template: template, petID: petID)
+                        session.finishTutorial(template: template, petID: petID, hasPlusAccess: subscriptions.hasPlusAccess)
                     } else {
                         withAnimation { step += 1 }
                     }
@@ -54,9 +56,13 @@ struct TutorialView: View {
             .padding(20)
         }
         .background(AppTheme.backgroundGradient.ignoresSafeArea())
+        .sheet(isPresented: $subscriptions.isPaywallPresented) {
+            PaywallView()
+                .environment(subscriptions)
+        }
         .onAppear {
             template = session.lastTemplate
-            petID = session.lastPetID
+            petID = PetCharacter.resolvedID(session.lastPetID, hasPlusAccess: subscriptions.hasPlusAccess)
             demoStore.load(template: template, petID: petID)
         }
         .onChange(of: step) { _, value in
@@ -154,26 +160,38 @@ struct TutorialView: View {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                     ForEach(PetCharacter.catalog) { pet in
+                        let locked = !subscriptions.isPetUnlocked(pet.id)
                         Button {
-                            petID = pet.id
+                            if subscriptions.requestPet(pet.id) {
+                                petID = pet.id
+                            }
                         } label: {
-                            VStack(spacing: 4) {
-                                PetIllustration(character: pet)
-                                    .frame(height: 90)
-                                Text(LocalizedStringKey(pet.nameKey))
-                                    .font(.caption2.weight(.semibold))
-                                    .foregroundStyle(AppTheme.ink)
-                                    .lineLimit(1)
+                            ZStack(alignment: .topTrailing) {
+                                VStack(spacing: 4) {
+                                    PetIllustration(character: pet)
+                                        .frame(height: 90)
+                                        .opacity(locked ? 0.55 : 1)
+                                    Text(LocalizedStringKey(pet.nameKey))
+                                        .font(.caption2.weight(.semibold))
+                                        .foregroundStyle(AppTheme.ink)
+                                        .lineLimit(1)
+                                }
+                                .padding(8)
+                                .background(.white)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .strokeBorder(!locked && pet.id == petID ? AppTheme.coral : Color.clear, lineWidth: 3)
+                                }
+                                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                if locked {
+                                    PlusLockBadge()
+                                        .padding(6)
+                                }
                             }
-                            .padding(8)
-                            .background(.white)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 16)
-                                    .strokeBorder(pet.id == petID ? AppTheme.coral : Color.clear, lineWidth: 3)
-                            }
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel(Text(LocalizedStringKey(pet.nameKey)))
+                        .accessibilityHint(Text(locked ? "a11y.plus.locked" : "a11y.pet.hint"))
                     }
                 }
                 .padding(.horizontal, 16)
