@@ -7,13 +7,16 @@ enum SubjectLiftService {
         let prepared = ImageProcessing.constrained(ImageProcessing.normalized(source), maxDimension: 2048)
         guard prepared.cgImage != nil else { throw SubjectLiftError.unsupportedImage }
 
+        try Task.checkCancellation()
+
         return try await withCheckedThrowingContinuation { continuation in
+            let box = ResumeBox(continuation)
             DispatchQueue.global(qos: .userInitiated).async {
                 do {
                     let result = try runVision(on: prepared)
-                    continuation.resume(returning: result)
+                    box.resume(returning: result)
                 } catch {
-                    continuation.resume(throwing: error)
+                    box.resume(throwing: error)
                 }
             }
         }
@@ -179,5 +182,31 @@ enum SubjectLiftService {
 
     private static func scaled(_ image: UIImage, maxSide: CGFloat) -> UIImage {
         ImageProcessing.constrained(image, maxDimension: maxSide)
+    }
+}
+
+/// Resumes a continuation at most once so cancel + Vision completion cannot crash.
+private final class ResumeBox<T>: @unchecked Sendable {
+    private let lock = NSLock()
+    private var continuation: CheckedContinuation<T, Error>?
+
+    init(_ continuation: CheckedContinuation<T, Error>) {
+        self.continuation = continuation
+    }
+
+    func resume(returning value: T) {
+        lock.lock()
+        let pending = continuation
+        continuation = nil
+        lock.unlock()
+        pending?.resume(returning: value)
+    }
+
+    func resume(throwing error: Error) {
+        lock.lock()
+        let pending = continuation
+        continuation = nil
+        lock.unlock()
+        pending?.resume(throwing: error)
     }
 }

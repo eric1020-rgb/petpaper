@@ -221,6 +221,10 @@ final class EditorStore {
 
     func follow(to point: CGPoint, in canvas: CGSize) {
         guard canvas.width > 0, canvas.height > 0 else { return }
+        if !isFollowingTouch {
+            pushUndo()
+            isFollowingTouch = true
+        }
         let normalized = clamp(CGPoint(x: point.x / canvas.width, y: point.y / canvas.height))
         var dx: CGFloat = 0
         var dy: CGFloat = 0
@@ -229,7 +233,6 @@ final class EditorStore {
             dy = point.y - last.y
         }
         lastFollowPoint = point
-        isFollowingTouch = true
 
         withAnimation(.interactiveSpring(response: 0.28, dampingFraction: 0.72, blendDuration: 0.12)) {
             state.petPosition = normalized

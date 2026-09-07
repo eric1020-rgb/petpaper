@@ -39,10 +39,10 @@ struct HomeView: View {
             guard let item else { return }
             Task { await loadPickedPhoto(item) }
         }
-        .alert(String(localized: "import.failed.title"), isPresented: $loadFailed) {
+        .alert(String(localized: "import.loadFailed.title"), isPresented: $loadFailed) {
             Button(String(localized: "common.ok"), role: .cancel) {}
         } message: {
-            Text("import.failed.unsupported")
+            Text("import.loadFailed.detail")
         }
     }
 

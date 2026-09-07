@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct EditorView: View {
     @State private var store: EditorStore
@@ -52,11 +53,24 @@ struct EditorView: View {
                 .presentationDragIndicator(.visible)
         }
         .alert(item: $exportMessage) { message in
-            Alert(
-                title: Text(message.title),
-                message: Text(message.body),
-                dismissButton: .default(Text("common.ok"))
-            )
+            if message.showsOpenSettings {
+                Alert(
+                    title: Text(message.title),
+                    message: Text(message.body),
+                    primaryButton: .default(Text("export.openSettings")) {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    },
+                    secondaryButton: .cancel(Text("common.ok"))
+                )
+            } else {
+                Alert(
+                    title: Text(message.title),
+                    message: Text(message.body),
+                    dismissButton: .default(Text("common.ok"))
+                )
+            }
         }
         .onChange(of: store.state.followMode) { _, enabled in
             if enabled {
@@ -148,17 +162,21 @@ struct EditorView: View {
     private func exportWallpaper() async {
         isExporting = true
         defer { isExporting = false }
-            guard let image = WallpaperExporter.render(state: store.state, pet: store.pet, photoPet: store.photoPet) else {
+        guard let image = WallpaperExporter.render(state: store.state, pet: store.pet, photoPet: store.photoPet) else {
             exportMessage = ExportMessage(title: String(localized: "export.error.title"), body: String(localized: "export.error.render"))
             return
         }
         do {
             try await WallpaperExporter.saveToPhotos(image)
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
             exportMessage = ExportMessage(title: String(localized: "export.success.title"), body: String(localized: "export.success.message"))
         } catch {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            let denied = (error as? WallpaperExportError) == .permissionDenied
             exportMessage = ExportMessage(
                 title: String(localized: "export.error.title"),
-                body: error.localizedDescription
+                body: error.localizedDescription,
+                showsOpenSettings: denied
             )
         }
     }
@@ -173,6 +191,7 @@ struct ExportMessage: Identifiable {
     let id = UUID()
     let title: String
     let body: String
+    var showsOpenSettings = false
 }
 
 struct EditorToolTray: View {

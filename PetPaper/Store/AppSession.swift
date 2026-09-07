@@ -2,6 +2,13 @@ import SwiftUI
 import UIKit
 import Observation
 
+enum AppCover: String, Identifiable, Equatable {
+    case tutorial
+    case photoImport
+
+    var id: String { rawValue }
+}
+
 @MainActor
 @Observable
 final class AppSession {
@@ -9,16 +16,15 @@ final class AppSession {
         didSet { UserDefaults.standard.set(hasCompletedTutorial, forKey: Self.tutorialKey) }
     }
 
-    var showTutorial: Bool
+    var presentedCover: AppCover?
     var path: [EditorRoute] = []
-    var showPhotoImport = false
     var importSourceImage: UIImage?
     var pendingPhotoPet: PhotoPetCutout?
 
     init() {
         let completed = UserDefaults.standard.bool(forKey: Self.tutorialKey)
         hasCompletedTutorial = completed
-        showTutorial = !completed
+        presentedCover = completed ? nil : .tutorial
     }
 
     func openEditor(template: TemplateKind, petID: String? = nil) {
@@ -26,35 +32,38 @@ final class AppSession {
         path.append(EditorRoute(template: template, petID: petID, usesPhotoPet: false))
     }
 
-    func openEditor(template: TemplateKind, photoPet: PhotoPetCutout) {
-        pendingPhotoPet = photoPet
-        path.append(EditorRoute(template: template, petID: nil, usesPhotoPet: true))
-    }
-
     func beginPhotoImport(_ image: UIImage) {
         importSourceImage = ImageProcessing.normalized(image)
-        showPhotoImport = true
+        presentedCover = .photoImport
     }
 
     func finishPhotoImport(cutout: PhotoPetCutout, template: TemplateKind) {
         pendingPhotoPet = cutout
-        showPhotoImport = false
+        importSourceImage = nil
+        presentedCover = nil
         path.append(EditorRoute(template: template, petID: nil, usesPhotoPet: true))
     }
 
     func dismissPhotoImport() {
-        showPhotoImport = false
+        presentedCover = nil
         importSourceImage = nil
     }
 
-    func completeTutorial(template: TemplateKind, petID: String) {
+    /// Skip on first launch and replay: go to home, do not push the editor.
+    func skipTutorial() {
         hasCompletedTutorial = true
-        showTutorial = false
+        presentedCover = nil
+    }
+
+    /// Last-step CTA: remember completion and open the editor with the user's picks.
+    func finishTutorial(template: TemplateKind, petID: String) {
+        hasCompletedTutorial = true
+        presentedCover = nil
         openEditor(template: template, petID: petID)
     }
 
     func replayTutorial() {
-        showTutorial = true
+        presentedCover = .tutorial
     }
 
     private static let tutorialKey = "petpaper.hasCompletedTutorial"

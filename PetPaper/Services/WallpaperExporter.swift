@@ -2,7 +2,7 @@ import SwiftUI
 import Photos
 import UIKit
 
-enum WallpaperExportError: LocalizedError {
+enum WallpaperExportError: LocalizedError, Equatable {
     case renderFailed
     case permissionDenied
     case saveFailed

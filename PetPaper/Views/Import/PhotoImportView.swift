@@ -15,6 +15,8 @@ struct PhotoImportView: View {
     @State private var cropInset = 0.0
     @State private var template: TemplateKind = .pastel
     @State private var cropRect = CGRect(x: 0.12, y: 0.12, width: 0.76, height: 0.76)
+    @State private var analyzeGeneration = 0
+    @State private var previewOrigin: PreviewOrigin = .vision
 
     enum Phase {
         case processing
@@ -22,6 +24,11 @@ struct PhotoImportView: View {
         case preview
         case failed
         case manualCrop
+    }
+
+    private enum PreviewOrigin {
+        case vision
+        case manual
     }
 
     var body: some View {
@@ -39,7 +46,14 @@ struct PhotoImportView: View {
             .navigationTitle(Text("import.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                if showsBackButton {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(String(localized: "common.back")) {
+                            goBack()
+                        }
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "import.cancel")) {
                         session.dismissPhotoImport()
                     }
@@ -187,6 +201,7 @@ struct PhotoImportView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(AppTheme.coral)
+                .disabled(previewImage == nil)
                 .frame(maxWidth: .infinity)
             }
             .padding(20)
@@ -303,29 +318,60 @@ struct PhotoImportView: View {
         }
     }
 
+    private var showsBackButton: Bool {
+        switch phase {
+        case .preview:
+            return previewOrigin == .manual || candidates.count > 1
+        case .manualCrop:
+            return true
+        case .processing, .choose, .failed:
+            return false
+        }
+    }
+
+    private func goBack() {
+        switch phase {
+        case .preview where previewOrigin == .manual:
+            phase = .manualCrop
+        case .preview where candidates.count > 1:
+            phase = .choose
+        case .manualCrop:
+            phase = .failed
+        default:
+            break
+        }
+    }
+
     private func analyze() async {
+        analyzeGeneration += 1
+        let generation = analyzeGeneration
         phase = .processing
         errorMessage = nil
         do {
             let found = try await SubjectLiftService.extract(from: original)
+            guard generation == analyzeGeneration, !Task.isCancelled else { return }
             candidates = found
             if found.count > 1 {
                 selected = found.first
                 phase = .choose
             } else if let only = found.first {
-                select(only)
+                select(only, origin: .vision)
             } else {
                 errorMessage = String(localized: "import.failed.body")
                 phase = .failed
             }
+        } catch is CancellationError {
+            return
         } catch {
+            guard generation == analyzeGeneration, !Task.isCancelled else { return }
             errorMessage = error.localizedDescription
             phase = .failed
         }
     }
 
-    private func select(_ candidate: SubjectCandidate) {
+    private func select(_ candidate: SubjectCandidate, origin: PreviewOrigin = .vision) {
         selected = candidate
+        previewOrigin = origin
         refreshPreview(using: candidate.cutout)
         phase = .preview
     }
@@ -347,7 +393,7 @@ struct PhotoImportView: View {
             animalHint: .subject
         )
         candidates = [candidate]
-        select(candidate)
+        select(candidate, origin: .manual)
     }
 
     private func confirm() {

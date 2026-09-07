@@ -11,7 +11,7 @@ struct TutorialView: View {
         VStack(spacing: 0) {
             HStack {
                 Button(String(localized: "tutorial.skip")) {
-                    session.completeTutorial(template: template, petID: petID)
+                    session.skipTutorial()
                 }
                 .foregroundStyle(AppTheme.muted)
                 Spacer()
@@ -41,7 +41,7 @@ struct TutorialView: View {
                 }
                 Button(step == 4 ? String(localized: "tutorial.start") : String(localized: "tutorial.next")) {
                     if step == 4 {
-                        session.completeTutorial(template: template, petID: petID)
+                        session.finishTutorial(template: template, petID: petID)
                     } else {
                         withAnimation { step += 1 }
                     }

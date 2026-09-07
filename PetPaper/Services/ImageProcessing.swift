@@ -44,14 +44,16 @@ enum ImageProcessing {
     }
 
     static func crop(_ image: UIImage, normalizedRect: CGRect) -> UIImage {
+        guard let cgImage = image.cgImage else { return image }
+        let pixelWidth = CGFloat(cgImage.width)
+        let pixelHeight = CGFloat(cgImage.height)
         let rect = CGRect(
-            x: normalizedRect.minX * image.size.width,
-            y: normalizedRect.minY * image.size.height,
-            width: max(normalizedRect.width * image.size.width, 8),
-            height: max(normalizedRect.height * image.size.height, 8)
+            x: normalizedRect.minX * pixelWidth,
+            y: normalizedRect.minY * pixelHeight,
+            width: max(normalizedRect.width * pixelWidth, 8),
+            height: max(normalizedRect.height * pixelHeight, 8)
         ).integral
-        guard let cgImage = image.cgImage,
-              let cropped = cgImage.cropping(to: rect) else {
+        guard let cropped = cgImage.cropping(to: rect) else {
             return image
         }
         return UIImage(cgImage: cropped, scale: 1, orientation: .up)

@@ -13,35 +13,49 @@ struct WallpaperCanvasView: View {
         GeometryReader { geo in
             let size = geo.size
             let layoutScale = max(size.width / 390, 0.4)
-            ZStack {
-                TemplateSceneView(
-                    template: store.state.template,
-                    palette: store.state.palette,
-                    hueShift: store.state.hueShift
+            canvasStack(in: size, layoutScale: layoutScale)
+                .contentShape(Rectangle())
+                .applyCanvasGestures(
+                    isInteractive: isInteractive,
+                    followMode: store.state.followMode,
+                    drag: dragGesture(in: size),
+                    magnify: magnifyGesture,
+                    rotate: rotateGesture
                 )
-
-                trailLayer(in: size, layoutScale: layoutScale)
-
-                ForEach(store.state.stickers) { sticker in
-                    stickerView(sticker, in: size, layoutScale: layoutScale)
-                }
-
-                petView(in: size, layoutScale: layoutScale)
-
-                if !store.state.overlayText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    textView(in: size, layoutScale: layoutScale)
-                }
-            }
-            .contentShape(Rectangle())
-            .gesture(dragGesture(in: size), including: isInteractive ? .all : .none)
-            .simultaneousGesture(magnifyGesture, including: canTransform ? .all : .none)
-            .simultaneousGesture(rotateGesture, including: canTransform ? .all : .none)
         }
         .clipped()
+        .onChange(of: store.state.followMode) { _, _ in
+            lastDrag = .zero
+            pinchBase = nil
+            rotateBase = nil
+        }
     }
 
     private var canTransform: Bool {
         isInteractive && !store.state.followMode
+    }
+
+    @ViewBuilder
+    private func canvasStack(in size: CGSize, layoutScale: CGFloat) -> some View {
+        ZStack {
+            TemplateSceneView(
+                template: store.state.template,
+                palette: store.state.palette,
+                hueShift: store.state.hueShift
+            )
+
+            trailLayer(in: size, layoutScale: layoutScale)
+
+            ForEach(store.state.stickers) { sticker in
+                stickerView(sticker, in: size, layoutScale: layoutScale)
+            }
+
+            petView(in: size, layoutScale: layoutScale)
+
+            if !store.state.overlayText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                textView(in: size, layoutScale: layoutScale)
+            }
+        }
     }
 
     private func trailLayer(in size: CGSize, layoutScale: CGFloat) -> some View {
@@ -67,6 +81,7 @@ struct WallpaperCanvasView: View {
                 }
             }
         }
+        .allowsHitTesting(false)
     }
 
     private func petView(in size: CGSize, layoutScale: CGFloat) -> some View {
@@ -92,8 +107,8 @@ struct WallpaperCanvasView: View {
             }
         }
         .position(x: store.state.petPosition.x * size.width, y: store.state.petPosition.y * size.height)
+        .allowsHitTesting(canTransform)
         .onTapGesture {
-            guard canTransform else { return }
             store.selection = .pet
         }
     }
@@ -112,8 +127,8 @@ struct WallpaperCanvasView: View {
                 }
             }
             .position(x: sticker.position.x * size.width, y: sticker.position.y * size.height)
+            .allowsHitTesting(canTransform)
             .onTapGesture {
-                guard canTransform else { return }
                 store.selection = .sticker(sticker.id)
             }
     }
@@ -135,8 +150,8 @@ struct WallpaperCanvasView: View {
             .scaleEffect(store.state.textScale)
             .rotationEffect(.degrees(store.state.textRotation))
             .position(x: store.state.textPosition.x * size.width, y: store.state.textPosition.y * size.height)
+            .allowsHitTesting(canTransform)
             .onTapGesture {
-                guard canTransform else { return }
                 store.selection = .text
             }
     }
@@ -243,5 +258,27 @@ struct ExportableWallpaperView: View {
         }
         .frame(width: size.width, height: size.height)
         .clipped()
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func applyCanvasGestures<Drag: Gesture, Magnify: Gesture, Rotate: Gesture>(
+        isInteractive: Bool,
+        followMode: Bool,
+        drag: Drag,
+        magnify: Magnify,
+        rotate: Rotate
+    ) -> some View {
+        if !isInteractive {
+            self
+        } else if followMode {
+            self.highPriorityGesture(drag)
+        } else {
+            self
+                .gesture(drag)
+                .simultaneousGesture(magnify)
+                .simultaneousGesture(rotate)
+        }
     }
 }

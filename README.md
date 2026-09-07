@@ -18,7 +18,9 @@ A native SwiftUI iPhone app for creating original cat and dog wallpapers. Templa
    - Set **Team** to your Apple ID / developer team.
 4. Press **Run** (⌘R).
 
-First launch shows a short tutorial (Traditional Chinese if the device language is zh-Hant, otherwise English). Re-open it anytime from the home card **快速教學 / Quick tutorial**.
+First launch shows a short tutorial (Traditional Chinese if the device language is zh-Hant, otherwise English). **Skip** goes to the home gallery; **開始整 / Start creating** on the last step opens the editor with the chosen template and pet. Re-open the tutorial anytime from the home card **快速教學 / Quick tutorial**.
+
+Code-level first-run QA (this repo cannot run Simulator) lives in **[QA.md](QA.md)**.
 
 ### 中文速覽
 
