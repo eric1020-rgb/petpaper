@@ -7,8 +7,8 @@ struct EditorView: View {
     @State private var exportMessage: ExportMessage?
     @State private var hueDraft: Double = 0
 
-    init(template: TemplateKind, petID: String?) {
-        _store = State(initialValue: EditorStore(template: template, petID: petID))
+    init(template: TemplateKind, petID: String?, photoPet: PhotoPetCutout? = nil) {
+        _store = State(initialValue: EditorStore(template: template, petID: petID, photoPet: photoPet))
         _hueDraft = State(initialValue: 0)
     }
 
@@ -109,8 +109,14 @@ struct EditorView: View {
                 activeSheet = nil
             }
         case .pet:
-            PetPickerSheet(currentID: store.state.petID) { pet in
+            PetPickerSheet(
+                currentID: store.state.petID,
+                photoPet: store.photoPet,
+                usesPhotoPet: store.state.usesPhotoPet
+            ) { pet in
                 store.selectPet(pet)
+            } onPickPhoto: {
+                store.restorePhotoPet()
             }
         case .sticker:
             StickerPickerSheet { kind in
@@ -142,7 +148,7 @@ struct EditorView: View {
     private func exportWallpaper() async {
         isExporting = true
         defer { isExporting = false }
-        guard let image = WallpaperExporter.render(state: store.state, pet: store.pet) else {
+            guard let image = WallpaperExporter.render(state: store.state, pet: store.pet, photoPet: store.photoPet) else {
             exportMessage = ExportMessage(title: String(localized: "export.error.title"), body: String(localized: "export.error.render"))
             return
         }
@@ -305,7 +311,10 @@ struct TemplatePickerSheet: View {
 
 struct PetPickerSheet: View {
     var currentID: String
+    var photoPet: PhotoPetCutout?
+    var usesPhotoPet: Bool
     var onPick: (PetCharacter) -> Void
+    var onPickPhoto: () -> Void
     @State private var species: PetSpecies = .cat
 
     var body: some View {
@@ -321,6 +330,28 @@ struct PetPickerSheet: View {
 
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
+                        if let photoPet {
+                            Button(action: onPickPhoto) {
+                                VStack(spacing: 8) {
+                                    PhotoPetView(cutout: photoPet)
+                                        .frame(height: 140)
+                                    Text("editor.photoPet")
+                                        .font(.subheadline.weight(.semibold))
+                                        .foregroundStyle(AppTheme.ink)
+                                }
+                                .padding(8)
+                                .frame(maxWidth: .infinity)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                        .fill(Color.white)
+                                )
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 18)
+                                        .strokeBorder(usesPhotoPet ? AppTheme.coral : Color.clear, lineWidth: 3)
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
                         ForEach(PetCharacter.catalog.filter { $0.species == species }) { pet in
                             Button {
                                 onPick(pet)
@@ -340,7 +371,7 @@ struct PetPickerSheet: View {
                                 )
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 18)
-                                        .strokeBorder(pet.id == currentID ? AppTheme.coral : Color.clear, lineWidth: 3)
+                                        .strokeBorder(!usesPhotoPet && pet.id == currentID ? AppTheme.coral : Color.clear, lineWidth: 3)
                                 }
                             }
                             .buttonStyle(.plain)

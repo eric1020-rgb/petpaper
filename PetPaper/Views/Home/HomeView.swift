@@ -1,12 +1,18 @@
 import SwiftUI
+import UIKit
+import PhotosUI
 
 struct HomeView: View {
     @Environment(AppSession.self) private var session
+    @State private var pickedItem: PhotosPickerItem?
+    @State private var isLoadingPhoto = false
+    @State private var loadFailed = false
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 header
+                uploadCard
                 tutorialCard
                 Text("home.section.templates")
                     .font(.title3.weight(.bold))
@@ -29,6 +35,15 @@ struct HomeView: View {
         }
         .background(AppTheme.backgroundGradient.ignoresSafeArea())
         .toolbar(.hidden, for: .navigationBar)
+        .onChange(of: pickedItem) { _, item in
+            guard let item else { return }
+            Task { await loadPickedPhoto(item) }
+        }
+        .alert(String(localized: "import.failed.title"), isPresented: $loadFailed) {
+            Button(String(localized: "common.ok"), role: .cancel) {}
+        } message: {
+            Text("import.failed.unsupported")
+        }
     }
 
     private var header: some View {
@@ -42,6 +57,43 @@ struct HomeView: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 12)
+    }
+
+    private var uploadCard: some View {
+        PhotosPicker(selection: $pickedItem, matching: .images) {
+            HStack(spacing: 14) {
+                ZStack {
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .font(.title2)
+                        .foregroundStyle(.white)
+                    if isLoadingPhoto {
+                        ProgressView()
+                            .tint(.white)
+                    }
+                }
+                .frame(width: 48, height: 48)
+                .background(AppTheme.sky)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("home.upload.title")
+                        .font(.headline)
+                        .foregroundStyle(AppTheme.ink)
+                    Text("home.upload.caption")
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.muted)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(AppTheme.muted)
+            }
+            .padding(14)
+            .background(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, 20)
+        .disabled(isLoadingPhoto)
     }
 
     private var tutorialCard: some View {
@@ -74,6 +126,24 @@ struct HomeView: View {
         }
         .buttonStyle(.plain)
         .padding(.horizontal, 20)
+    }
+
+    private func loadPickedPhoto(_ item: PhotosPickerItem) async {
+        isLoadingPhoto = true
+        defer {
+            isLoadingPhoto = false
+            pickedItem = nil
+        }
+        do {
+            guard let data = try await item.loadTransferable(type: Data.self),
+                  let image = UIImage(data: data) else {
+                loadFailed = true
+                return
+            }
+            session.beginPhotoImport(image)
+        } catch {
+            loadFailed = true
+        }
     }
 }
 

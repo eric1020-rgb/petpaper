@@ -24,7 +24,7 @@ First launch shows a short tutorial (Traditional Chinese if the device language 
 
 1. 用 Xcode 打開 `PetPaper.xcodeproj`。
 2. 選 iPhone 模擬器，在 Signing 選你的 Team，按 ⌘R 執行。
-3. 首次啟動會進入教學：選模板 → 選寵物 → 拖曳跟著走 → 儲存。
+3. 首次啟動會進入教學：選模板 → 選寵物 → 拖曳跟著走 → 儲存。主畫面也可「用我嘅相」上傳貓狗照片去背。
 4. 在編輯器點右上角 **儲存**，壁紙會寫入「照片」（1290×2796）。再到 iOS 設成鎖定／主畫面壁紙。
 
 ---
@@ -48,7 +48,25 @@ Keep it in sync with the App ID you create in [Apple Developer](https://develope
 - The canvas is rendered at **1290 × 2796**, a size that fits modern iPhone wallpapers.
 - Then in iOS: Photos → share / wallpaper, or Settings → Wallpaper.
 
-Photos permission copy lives in `PetPaper/Info.plist` and `PetPaper/InfoPlist.xcstrings` (zh-Hant + English).
+Photos permission copy lives in `PetPaper/Info.plist` and `PetPaper/InfoPlist.xcstrings` (zh-Hant + English). The picker uses the system photo picker (no full-library permission required). Saving wallpapers requests **add-only** access.
+
+---
+
+## Upload a photo and lift the pet (iOS 17+)
+
+Home screen card **用我嘅相 / Upload a pet photo**:
+
+1. Pick an image with `PhotosPicker`.
+2. On-device **Vision** (`VNGenerateForegroundInstanceMaskRequest`) lifts foreground subjects. Cats/dogs are preferred when `VNRecognizeAnimalsRequest` can label them.
+3. If several subjects are found, tap the one you want.
+4. Optional refine: edge, inward crop, tint, soft shadow.
+5. Confirm onto a template, then edit (move / scale / rotate / Follow / stickers / text) and save like any other wallpaper.
+
+**Privacy:** subject lift, animal hints, and masking all run on-device. No cloud APIs and no third-party ML packages.
+
+**If Vision finds nothing:** a clear error plus tips, and a **manual crop** fallback (soft elliptical cutout of the framed area). Quality is better on a real iPhone than Simulator.
+
+Requires **iOS 17.0+** (already the app’s deployment target) because instance-mask subject lift shipped in iOS 17.
 
 ---
 
@@ -65,8 +83,8 @@ PetPaper/
   Assets.xcassets           App icon + accent
   Models/                   Templates, pets, stickers, editor state
   Store/                    AppSession, EditorStore
-  Services/                 Photos export (PHPhotoLibrary)
-  Views/                    Home, editor, tutorial, procedural art
+  Services/                 Photos export, on-device Vision subject lift
+  Views/                    Home, editor, photo import, tutorial, procedural art
 ```
 
 No CocoaPods, SPM packages, or paid APIs. The MVP does not require an account.
@@ -78,6 +96,7 @@ No CocoaPods, SPM packages, or paid APIs. The MVP does not require an account.
 - **Gallery:** 8 SwiftUI scenes (pastel, night sky, park, cozy room, neon, sakura, beach, snow).
 - **Pets:** 6 cats and 6 dogs, drawn with Canvas / shapes (tabby, calico, tuxedo, Siamese, grey, white; golden, corgi, husky, Dalmatian, shiba, black dog).
 - **Editor:** colors (hue + accent), stickers (paws, hearts, bowls, balls, yarn, …), short text, place / scale / rotate.
+- **Photo pets:** upload from Photos, on-device Vision cutout (iOS 17 subject lift), tap to choose if several subjects, then edit like an illustrated pet.
 - **Follow mode:** the pet springs after your finger; optional fading paw-print trail.
 - **Undo / reset** and **save to Photos**.
 - **Tutorial** on first launch, replayable from home.
@@ -92,7 +111,7 @@ Use this as a high-level list, not a substitute for Apple’s current review gui
 2. **Bundle ID** matches App Store Connect (change the placeholder).
 3. **Signing:** Release archive with your distribution certificate / App Store profile (Automatic signing is fine).
 4. **Version:** `MARKETING_VERSION` 1.0 and `CURRENT_PROJECT_VERSION` 1 (bump build for each upload).
-5. **Privacy:** Photos add-only usage strings are set. Privacy Nutrition Labels: the app does not collect account data; it only writes images the user saves. Confirm in App Privacy.
+5. **Privacy:** Photos picker + add-only save strings are set. Cutout is on-device Vision only. Privacy Nutrition Labels: the app does not collect account data; it only reads a photo the user picks and writes images they save. Confirm in App Privacy.
 6. **Privacy manifest:** `PrivacyInfo.xcprivacy` declares UserDefaults reason `CA92.1` (tutorial completion flag).
 7. **Icons:** replace the placeholder 1024×1024 `AppIcon` if you want a custom marketing icon. iOS app icons must be opaque.
 8. **Screenshots:** capture iPhone 6.7" (and any other required sizes) of home, editor, follow mode, and export.

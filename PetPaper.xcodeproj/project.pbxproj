@@ -29,6 +29,11 @@
 		EFB9F37F6A73528C55F997F5 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 53FD71E7C57E1D088FFB2731 /* Localizable.xcstrings */; };
 		D1F3A3BE1A12DFD36CF69C6C /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8F0EE59DB94F9B36559A4284 /* InfoPlist.xcstrings */; };
 		45EE34D219CC53D65BBC26B0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5994963D1B3A3BCB44C1F943 /* PrivacyInfo.xcprivacy */; };
+		5D228F81D4125E7A98FDC294 /* PhotoPetCutout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D6ECAFEB148DFED13EF379 /* PhotoPetCutout.swift */; };
+		0314F2FCA6074A9204337BA1 /* SubjectLiftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CBC93A6D3C01749D9CFF81 /* SubjectLiftService.swift */; };
+		778031F205A4E9B9D534809A /* ImageProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0507A09E70382EC0CA7440BD /* ImageProcessing.swift */; };
+		388E72CEF468D4D7770A555F /* PhotoPetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE79E910CAD4B103915D063F /* PhotoPetView.swift */; };
+		66C0E1D0A5E08EF83E5EBC61 /* PhotoImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02594540A22A2CFFA58B3C9 /* PhotoImportView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +61,11 @@
 		8F0EE59DB94F9B36559A4284 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		5994963D1B3A3BCB44C1F943 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		26858F66DF8624867574B286 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		21D6ECAFEB148DFED13EF379 /* PhotoPetCutout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPetCutout.swift; sourceTree = "<group>"; };
+		73CBC93A6D3C01749D9CFF81 /* SubjectLiftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectLiftService.swift; sourceTree = "<group>"; };
+		0507A09E70382EC0CA7440BD /* ImageProcessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessing.swift; sourceTree = "<group>"; };
+		FE79E910CAD4B103915D063F /* PhotoPetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPetView.swift; sourceTree = "<group>"; };
+		B02594540A22A2CFFA58B3C9 /* PhotoImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImportView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +120,7 @@
 				1CD2D355DCD39B59C401DFDC /* RGBAColor.swift */,
 				2D0364D5F24591C166EE91ED /* StickerKind.swift */,
 				F83538547ED14BA4C63E76A1 /* WallpaperTemplate.swift */,
+				21D6ECAFEB148DFED13EF379 /* PhotoPetCutout.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -127,6 +138,8 @@
 			isa = PBXGroup;
 			children = (
 				665D0C8F67DCEA75F0E7ED66 /* WallpaperExporter.swift */,
+				73CBC93A6D3C01749D9CFF81 /* SubjectLiftService.swift */,
+				0507A09E70382EC0CA7440BD /* ImageProcessing.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -149,6 +162,7 @@
 				526F34059393605AF0312D52 /* Templates */,
 				00272547D039F43CA94AD207 /* Pets */,
 				88C63C820B8551EC2A1A4CAA /* Stickers */,
+				69A01ED20980BE051BA4F378 /* Import */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -190,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				A265C6EB4BDA5CF0FCD10316 /* PetIllustration.swift */,
+				FE79E910CAD4B103915D063F /* PhotoPetView.swift */,
 			);
 			path = Pets;
 			sourceTree = "<group>";
@@ -200,6 +215,14 @@
 				DC7F248B520F9000C4092C83 /* StickerGlyph.swift */,
 			);
 			path = Stickers;
+			sourceTree = "<group>";
+		};
+		69A01ED20980BE051BA4F378 /* Import */ = {
+			isa = PBXGroup;
+			children = (
+				B02594540A22A2CFFA58B3C9 /* PhotoImportView.swift */,
+			);
+			path = Import;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -293,6 +316,11 @@
 				DBD7C5530E947ABF08539B2B /* StickerGlyph.swift in Sources */,
 				2B37C8736ABBE47780018F7F /* TemplateSceneView.swift in Sources */,
 				F10722FC198F7935CDAF6230 /* TutorialView.swift in Sources */,
+				5D228F81D4125E7A98FDC294 /* PhotoPetCutout.swift in Sources */,
+				0314F2FCA6074A9204337BA1 /* SubjectLiftService.swift in Sources */,
+				778031F205A4E9B9D534809A /* ImageProcessing.swift in Sources */,
+				388E72CEF468D4D7770A555F /* PhotoPetView.swift in Sources */,
+				66C0E1D0A5E08EF83E5EBC61 /* PhotoImportView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,7 +456,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "寵物壁紙";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "寵物壁紙會將你設計的壁紙存到照片，方便設為鎖定畫面或主畫面。";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "寵物壁紙只會在儲存你創作的壁紙時使用照片圖庫。";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "寵物壁紙會讀取你選的照片，在裝置上取出貓或狗，並將完成的壁紙存回照片。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -470,7 +498,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "寵物壁紙";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "寵物壁紙會將你設計的壁紙存到照片，方便設為鎖定畫面或主畫面。";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "寵物壁紙只會在儲存你創作的壁紙時使用照片圖庫。";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "寵物壁紙會讀取你選的照片，在裝置上取出貓或狗，並將完成的壁紙存回照片。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

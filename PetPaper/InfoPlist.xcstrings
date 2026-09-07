@@ -31,13 +31,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PetPaper needs photo library access only to save wallpapers you create."
+            "value" : "PetPaper reads a photo you pick so it can lift your cat or dog on this device, and saves finished wallpapers back to Photos."
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "寵物壁紙只會在儲存你創作的壁紙時使用照片圖庫。"
+            "value" : "寵物壁紙會讀取你選的照片，在裝置上取出貓或狗，並將完成的壁紙存回照片。"
           }
         }
       }

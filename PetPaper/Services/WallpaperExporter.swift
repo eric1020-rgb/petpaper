@@ -23,8 +23,8 @@ enum WallpaperExporter {
     static let canvasSize = CGSize(width: 1290, height: 2796)
 
     @MainActor
-    static func render(state: EditorState, pet: PetCharacter) -> UIImage? {
-        let content = ExportableWallpaperView(state: state, pet: pet, size: canvasSize)
+    static func render(state: EditorState, pet: PetCharacter, photoPet: PhotoPetCutout? = nil) -> UIImage? {
+        let content = ExportableWallpaperView(state: state, pet: pet, photoPet: photoPet, size: canvasSize)
         let renderer = ImageRenderer(content: content)
         renderer.scale = 1
         renderer.proposedSize = ProposedViewSize(canvasSize)

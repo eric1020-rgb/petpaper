@@ -85,6 +85,11 @@ struct TutorialView: View {
                 .foregroundStyle(AppTheme.muted)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
+            Text("tutorial.upload.note")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(AppTheme.coral)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 28)
             Spacer()
         }
     }

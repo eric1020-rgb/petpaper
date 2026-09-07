@@ -71,12 +71,17 @@ struct WallpaperCanvasView: View {
 
     private func petView(in size: CGSize, layoutScale: CGFloat) -> some View {
         let selected = showsSelection && store.selection == .pet && isInteractive && !store.state.followMode
-        return PetIllustration(
+        let usesPhoto = store.state.usesPhotoPet && store.photoPet != nil
+        return PetLayerView(
             character: store.pet,
+            photoPet: usesPhoto ? store.photoPet : nil,
             lookOffset: store.lookOffset,
             lean: store.lean + store.state.petRotation * 0.15
         )
-        .frame(width: 170 * layoutScale, height: 190 * layoutScale)
+        .frame(
+            width: (usesPhoto ? 210 : 170) * layoutScale,
+            height: (usesPhoto ? 230 : 190) * layoutScale
+        )
         .scaleEffect(store.state.petScale)
         .rotationEffect(.degrees(store.state.petRotation))
         .padding(10)
@@ -197,10 +202,12 @@ struct WallpaperCanvasView: View {
 struct ExportableWallpaperView: View {
     let state: EditorState
     let pet: PetCharacter
+    var photoPet: PhotoPetCutout? = nil
     var size: CGSize = WallpaperExporter.canvasSize
 
     var body: some View {
         let layoutScale = max(size.width / 390, 0.4)
+        let usesPhoto = state.usesPhotoPet && photoPet != nil
         ZStack {
             TemplateSceneView(template: state.template, palette: state.palette, hueShift: state.hueShift)
                 .frame(width: size.width, height: size.height)
@@ -214,8 +221,11 @@ struct ExportableWallpaperView: View {
                     .position(x: sticker.position.x * size.width, y: sticker.position.y * size.height)
             }
 
-            PetIllustration(character: pet)
-                .frame(width: 170 * layoutScale, height: 190 * layoutScale)
+            PetLayerView(character: pet, photoPet: usesPhoto ? photoPet : nil)
+                .frame(
+                    width: (usesPhoto ? 210 : 170) * layoutScale,
+                    height: (usesPhoto ? 230 : 190) * layoutScale
+                )
                 .scaleEffect(state.petScale)
                 .rotationEffect(.degrees(state.petRotation))
                 .position(x: state.petPosition.x * size.width, y: state.petPosition.y * size.height)

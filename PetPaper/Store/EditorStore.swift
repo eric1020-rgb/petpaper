@@ -12,6 +12,7 @@ final class EditorStore {
     var lean: Double = 0
     var isFollowingTouch = false
     var lastFollowPoint: CGPoint?
+    var photoPet: PhotoPetCutout?
 
     private var undoStack: [EditorState] = []
     private let maxUndo = 40
@@ -22,8 +23,13 @@ final class EditorStore {
 
     var canUndo: Bool { !undoStack.isEmpty }
 
-    init(template: TemplateKind, petID: String? = nil) {
-        state = .fresh(template: template, petID: petID ?? PetCharacter.catalog[0].id)
+    init(template: TemplateKind, petID: String? = nil, photoPet: PhotoPetCutout? = nil) {
+        state = .fresh(
+            template: template,
+            petID: petID ?? PetCharacter.catalog[0].id,
+            usesPhotoPet: photoPet != nil
+        )
+        self.photoPet = photoPet
     }
 
     func load(template: TemplateKind, petID: String?) {
@@ -51,7 +57,7 @@ final class EditorStore {
 
     func reset() {
         pushUndo()
-        state = .fresh(template: state.template, petID: state.petID)
+        state = .fresh(template: state.template, petID: state.petID, usesPhotoPet: state.usesPhotoPet && photoPet != nil)
         selection = .pet
         pawTrail.removeAll()
         lookOffset = .zero
@@ -59,9 +65,16 @@ final class EditorStore {
     }
 
     func selectPet(_ character: PetCharacter) {
-        guard character.id != state.petID else { return }
         pushUndo()
         state.petID = character.id
+        state.usesPhotoPet = false
+        selection = .pet
+    }
+
+    func restorePhotoPet() {
+        guard photoPet != nil else { return }
+        pushUndo()
+        state.usesPhotoPet = true
         selection = .pet
     }
 
@@ -71,7 +84,8 @@ final class EditorStore {
         let previousPet = state.petID
         let previousText = state.overlayText
         let previousStickers = state.stickers
-        state = .fresh(template: template, petID: previousPet)
+        let keepPhoto = state.usesPhotoPet
+        state = .fresh(template: template, petID: previousPet, usesPhotoPet: keepPhoto)
         state.overlayText = previousText
         state.stickers = previousStickers
         if template.isDark {

@@ -16,8 +16,9 @@ struct EditorState: Equatable {
     var textColor: RGBAColor
     var followMode: Bool
     var pawTrailEnabled: Bool
+    var usesPhotoPet: Bool
 
-    static func fresh(template: TemplateKind, petID: String = PetCharacter.catalog[0].id) -> EditorState {
+    static func fresh(template: TemplateKind, petID: String = PetCharacter.catalog[0].id, usesPhotoPet: Bool = false) -> EditorState {
         EditorState(
             template: template,
             palette: template.defaultPalette,
@@ -33,7 +34,8 @@ struct EditorState: Equatable {
             textRotation: 0,
             textColor: template.isDark ? .hex(0xFFFFFF) : .hex(0x3A2A32),
             followMode: false,
-            pawTrailEnabled: false
+            pawTrailEnabled: false,
+            usesPhotoPet: usesPhotoPet
         )
     }
 }

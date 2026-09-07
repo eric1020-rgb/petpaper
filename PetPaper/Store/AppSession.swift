@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import Observation
 
 @MainActor
@@ -10,6 +11,9 @@ final class AppSession {
 
     var showTutorial: Bool
     var path: [EditorRoute] = []
+    var showPhotoImport = false
+    var importSourceImage: UIImage?
+    var pendingPhotoPet: PhotoPetCutout?
 
     init() {
         let completed = UserDefaults.standard.bool(forKey: Self.tutorialKey)
@@ -18,7 +22,29 @@ final class AppSession {
     }
 
     func openEditor(template: TemplateKind, petID: String? = nil) {
-        path.append(EditorRoute(template: template, petID: petID))
+        pendingPhotoPet = nil
+        path.append(EditorRoute(template: template, petID: petID, usesPhotoPet: false))
+    }
+
+    func openEditor(template: TemplateKind, photoPet: PhotoPetCutout) {
+        pendingPhotoPet = photoPet
+        path.append(EditorRoute(template: template, petID: nil, usesPhotoPet: true))
+    }
+
+    func beginPhotoImport(_ image: UIImage) {
+        importSourceImage = ImageProcessing.normalized(image)
+        showPhotoImport = true
+    }
+
+    func finishPhotoImport(cutout: PhotoPetCutout, template: TemplateKind) {
+        pendingPhotoPet = cutout
+        showPhotoImport = false
+        path.append(EditorRoute(template: template, petID: nil, usesPhotoPet: true))
+    }
+
+    func dismissPhotoImport() {
+        showPhotoImport = false
+        importSourceImage = nil
     }
 
     func completeTutorial(template: TemplateKind, petID: String) {
@@ -38,4 +64,5 @@ struct EditorRoute: Hashable {
     let id = UUID()
     var template: TemplateKind
     var petID: String?
+    var usesPhotoPet: Bool = false
 }
