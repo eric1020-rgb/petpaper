@@ -121,15 +121,18 @@ struct DesktopPetIntent: WidgetConfigurationIntent {
     }
 
     var resolvedPetID: String {
+        let raw: String
         switch pet {
         case .appSetting, .photoCutout:
-            return AppGroupStore.lastPetID
+            raw = AppGroupStore.lastPetID
         default:
-            return AppGroupStore.validatedPetID(pet.rawValue)
+            raw = AppGroupStore.validatedPetID(pet.rawValue)
         }
+        return PetCharacter.resolvedID(raw, hasPlusAccess: AppGroupStore.hasPlusAccess)
     }
 
     var resolvedUsesPhoto: Bool {
+        guard AppGroupStore.hasPlusAccess else { return false }
         switch pet {
         case .photoCutout:
             return AppGroupStore.loadPhotoCutout() != nil
@@ -150,6 +153,7 @@ struct DesktopPetIntent: WidgetConfigurationIntent {
     }
 
     var resolvedIdleEnabled: Bool {
+        guard AppGroupStore.hasPlusAccess else { return false }
         switch idleMode {
         case .appSetting: return AppGroupStore.idleEnabled
         case .on: return true

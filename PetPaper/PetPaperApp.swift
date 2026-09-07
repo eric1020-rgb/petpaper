@@ -3,13 +3,15 @@ import SwiftUI
 @main
 struct PetPaperApp: App {
     @State private var session = AppSession()
+    @State private var subscriptions = SubscriptionManager()
 
     var body: some Scene {
         WindowGroup {
             RootView(session: session)
                 .environment(session)
+                .environment(subscriptions)
                 .onOpenURL { url in
-                    session.handleDeepLink(url)
+                    session.handleDeepLink(url, hasPlusAccess: subscriptions.hasPlusAccess)
                 }
         }
     }

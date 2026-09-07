@@ -1,7 +1,25 @@
 import SwiftUI
 
+enum PlusIdleControls {
+    static func enabledBinding(session: AppSession, subscriptions: SubscriptionManager) -> Binding<Bool> {
+        Binding(
+            get: { session.idleEnabled && subscriptions.canUsePremiumMotion() },
+            set: { newValue in
+                if newValue {
+                    if subscriptions.requestPremiumMotion() {
+                        session.idleEnabled = true
+                    }
+                } else {
+                    session.idleEnabled = false
+                }
+            }
+        )
+    }
+}
+
 struct IdleSettingsCard: View {
     @Environment(AppSession.self) private var session
+    @Environment(SubscriptionManager.self) private var subscriptions
     @Bindable var idle: PetIdleDirector
     var onPreview: () -> Void
 
@@ -19,24 +37,27 @@ struct IdleSettingsCard: View {
                     Text("idle.title")
                         .font(.headline)
                         .foregroundStyle(AppTheme.ink)
-                    Text("idle.subtitle")
+                    Text(LocalizedStringKey(subscriptions.canUsePremiumMotion() ? "idle.subtitle" : "idle.locked"))
                         .font(.footnote)
                         .foregroundStyle(AppTheme.muted)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
+                if !subscriptions.canUsePremiumMotion() {
+                    PlusLockBadge()
+                }
             }
 
             IdleMiniPreview(idle: idle)
                 .frame(height: 120)
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
-            Toggle(isOn: $session.idleEnabled) {
+            Toggle(isOn: PlusIdleControls.enabledBinding(session: session, subscriptions: subscriptions)) {
                 Text("idle.enabled")
                     .font(.subheadline.weight(.semibold))
             }
             .tint(AppTheme.coral)
-            .accessibilityHint(Text("a11y.idle.hint"))
+            .accessibilityHint(Text(subscriptions.canUsePremiumMotion() ? "a11y.idle.hint" : "a11y.plus.locked"))
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("idle.interval")
@@ -65,7 +86,7 @@ struct IdleSettingsCard: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(AppTheme.coral)
-            .accessibilityHint(Text("a11y.idle.preview"))
+            .accessibilityHint(Text(subscriptions.canUsePremiumMotion() ? "a11y.idle.preview" : "a11y.plus.locked"))
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("widget.install.title")
@@ -95,6 +116,7 @@ struct IdleSettingsCard: View {
 
 struct IdleSettingsSheet: View {
     @Environment(AppSession.self) private var session
+    @Environment(SubscriptionManager.self) private var subscriptions
     var onPreview: () -> Void
     var onClose: () -> Void
 
@@ -102,11 +124,17 @@ struct IdleSettingsSheet: View {
         @Bindable var session = session
         NavigationStack {
             Form {
+                if !subscriptions.canUsePremiumMotion() {
+                    Section {
+                        Text("idle.locked")
+                            .foregroundStyle(AppTheme.muted)
+                    }
+                }
                 Section {
-                    Toggle(isOn: $session.idleEnabled) {
+                    Toggle(isOn: PlusIdleControls.enabledBinding(session: session, subscriptions: subscriptions)) {
                         Text("idle.enabled")
                     }
-                    .accessibilityHint(Text("a11y.idle.hint"))
+                    .accessibilityHint(Text(subscriptions.canUsePremiumMotion() ? "a11y.idle.hint" : "a11y.plus.locked"))
                     Picker(String(localized: "idle.interval"), selection: $session.idleInterval) {
                         ForEach(IdleInterval.allCases) { interval in
                             Text(LocalizedStringKey(interval.titleKey)).tag(interval)
@@ -121,7 +149,7 @@ struct IdleSettingsSheet: View {
                     Button(action: onPreview) {
                         Label(String(localized: "idle.preview"), systemImage: "play.circle.fill")
                     }
-                    .accessibilityHint(Text("a11y.idle.preview"))
+                    .accessibilityHint(Text(subscriptions.canUsePremiumMotion() ? "a11y.idle.preview" : "a11y.plus.locked"))
                 }
 
                 Section {

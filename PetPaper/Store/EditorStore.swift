@@ -93,6 +93,22 @@ final class EditorStore {
         idle.cancel()
     }
 
+    /// Silent fallback when Plus lapses while a locked pet or photo cutout is on the canvas.
+    func applyFreeTierIfNeeded(hasPlusAccess: Bool) {
+        guard !hasPlusAccess else { return }
+        idle.cancel()
+        if state.usesPhotoPet {
+            state.usesPhotoPet = false
+            state.petID = PetCharacter.freePetID
+            selection = .pet
+            return
+        }
+        if !PetCharacter.isFree(state.petID) {
+            state.petID = PetCharacter.freePetID
+            selection = .pet
+        }
+    }
+
     func setTemplate(_ template: TemplateKind) {
         guard template != state.template else { return }
         pushUndo()
