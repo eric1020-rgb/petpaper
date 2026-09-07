@@ -17,15 +17,41 @@ final class AppSession {
     }
 
     var lastTemplate: TemplateKind {
-        didSet { UserDefaults.standard.set(lastTemplate.rawValue, forKey: Self.lastTemplateKey) }
+        didSet {
+            AppGroupStore.lastTemplate = lastTemplate
+            UserDefaults.standard.set(lastTemplate.rawValue, forKey: Self.lastTemplateKey)
+        }
     }
 
     var lastPetID: String {
-        didSet { UserDefaults.standard.set(lastPetID, forKey: Self.lastPetIDKey) }
+        didSet {
+            AppGroupStore.lastPetID = lastPetID
+            UserDefaults.standard.set(lastPetID, forKey: Self.lastPetIDKey)
+        }
     }
 
     /// False until the user has opened the editor (or placed a photo pet) at least once.
     var hasRememberedEditor: Bool
+
+    var idleEnabled: Bool {
+        didSet {
+            AppGroupStore.idleEnabled = idleEnabled
+            AppGroupStore.reloadDesktopPetWidget()
+        }
+    }
+
+    var idleInterval: IdleInterval {
+        didSet {
+            AppGroupStore.idleInterval = idleInterval
+            AppGroupStore.reloadDesktopPetWidget()
+        }
+    }
+
+    var idleToastEnabled: Bool {
+        didSet {
+            AppGroupStore.idleToastEnabled = idleToastEnabled
+        }
+    }
 
     var presentedCover: AppCover?
     var path: [EditorRoute] = []
@@ -36,15 +62,25 @@ final class AppSession {
         let completed = UserDefaults.standard.bool(forKey: Self.tutorialKey)
         hasCompletedTutorial = completed
         presentedCover = completed ? nil : .tutorial
-        if let raw = UserDefaults.standard.string(forKey: Self.lastTemplateKey),
+        if let raw = AppGroupStore.defaults.string(forKey: AppGroupStore.lastTemplateKey) ?? UserDefaults.standard.string(forKey: Self.lastTemplateKey),
            let template = TemplateKind(rawValue: raw) {
             lastTemplate = template
         } else {
             lastTemplate = .pastel
         }
-        let storedPet = UserDefaults.standard.string(forKey: Self.lastPetIDKey)
+        let storedPet = AppGroupStore.defaults.string(forKey: AppGroupStore.lastPetIDKey)
+            ?? UserDefaults.standard.string(forKey: Self.lastPetIDKey)
         lastPetID = Self.validatedPetID(storedPet)
         hasRememberedEditor = UserDefaults.standard.object(forKey: Self.lastTemplateKey) != nil
+            || AppGroupStore.defaults.object(forKey: AppGroupStore.lastTemplateKey) != nil
+        idleEnabled = AppGroupStore.idleEnabled
+        idleInterval = AppGroupStore.idleInterval
+        idleToastEnabled = AppGroupStore.idleToastEnabled
+        AppGroupStore.lastTemplate = lastTemplate
+        AppGroupStore.lastPetID = lastPetID
+        AppGroupStore.idleEnabled = idleEnabled
+        AppGroupStore.idleInterval = idleInterval
+        AppGroupStore.idleToastEnabled = idleToastEnabled
     }
 
     func openEditor(template: TemplateKind, petID: String? = nil) {
@@ -63,7 +99,9 @@ final class AppSession {
         pendingPhotoPet = cutout
         importSourceImage = nil
         presentedCover = nil
-        remember(template: template, petID: nil)
+        remember(template: template, petID: nil, usesPhotoPet: true)
+        AppGroupStore.savePhotoCutout(cutout)
+        AppGroupStore.reloadDesktopPetWidget()
         path.append(EditorRoute(template: template, petID: nil, usesPhotoPet: true))
     }
 
@@ -89,11 +127,42 @@ final class AppSession {
         presentedCover = .tutorial
     }
 
-    func remember(template: TemplateKind, petID: String?) {
+    func remember(template: TemplateKind, petID: String?, usesPhotoPet: Bool? = nil) {
         lastTemplate = template
         hasRememberedEditor = true
         if let petID {
             lastPetID = Self.validatedPetID(petID)
+        }
+        if let usesPhotoPet {
+            AppGroupStore.usesPhotoPet = usesPhotoPet
+        } else if petID != nil {
+            AppGroupStore.usesPhotoPet = false
+        }
+        AppGroupStore.reloadDesktopPetWidget()
+    }
+
+    func handleDeepLink(_ url: URL) {
+        guard url.scheme == AppGroupStore.urlScheme else { return }
+        presentedCover = nil
+        var template = lastTemplate
+        var petID = lastPetID
+        if let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems {
+            if let raw = items.first(where: { $0.name == "template" })?.value,
+               let parsed = TemplateKind(rawValue: raw) {
+                template = parsed
+            }
+            if let raw = items.first(where: { $0.name == "pet" })?.value {
+                petID = Self.validatedPetID(raw)
+            }
+        }
+        if path.isEmpty {
+            if AppGroupStore.usesPhotoPet, let cutout = AppGroupStore.loadPhotoCutout() {
+                pendingPhotoPet = cutout
+                remember(template: template, petID: nil, usesPhotoPet: true)
+                path.append(EditorRoute(template: template, petID: nil, usesPhotoPet: true))
+            } else {
+                openEditor(template: template, petID: petID)
+            }
         }
     }
 

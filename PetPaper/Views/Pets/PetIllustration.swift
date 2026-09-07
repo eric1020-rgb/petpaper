@@ -4,13 +4,14 @@ struct PetIllustration: View {
     let character: PetCharacter
     var lookOffset: CGSize = .zero
     var lean: Double = 0
+    var pose: IdlePose = .rest
 
     var body: some View {
         Canvas { context, size in
             let cx = size.width / 2
             let ground = size.height * 0.86
-            let bodyW = size.width * character.bodyWidth * 0.42
-            let bodyH = size.height * 0.34
+            let bodyW = size.width * character.bodyWidth * 0.42 * pose.bodySquash
+            let bodyH = size.height * 0.34 * pose.bodySquash
             let legH = size.height * (0.12 + character.legLength * 0.12)
             let headR = size.width * (0.18 * character.headScale)
 
@@ -19,26 +20,27 @@ struct PetIllustration: View {
             drawBody(context: &context, size: size, cx: cx, ground: ground, bodyW: bodyW, bodyH: bodyH, legH: legH)
             drawHead(context: &context, size: size, cx: cx, ground: ground, bodyH: bodyH, legH: legH, headR: headR)
         }
-        .rotationEffect(.degrees(lean))
+        .rotationEffect(.degrees(lean + pose.lean))
         .animation(.interactiveSpring(response: 0.32, dampingFraction: 0.7), value: lean)
         .accessibilityHidden(true)
     }
 
     private func drawTail(context: inout GraphicsContext, size: CGSize, cx: CGFloat, ground: CGFloat, bodyH: CGFloat) {
+        let wag = pose.tailWag
         let origin = CGPoint(x: cx + size.width * 0.12, y: ground - bodyH * 0.55)
         var path = Path()
         switch character.tail {
         case .short:
-            path.addEllipse(in: CGRect(x: origin.x, y: origin.y, width: size.width * 0.08, height: size.height * 0.07))
+            path.addEllipse(in: CGRect(x: origin.x, y: origin.y - wag * 0.2, width: size.width * 0.08, height: size.height * 0.07))
         case .curled:
-            path.addArc(center: CGPoint(x: origin.x + 10, y: origin.y - 8), radius: size.width * 0.08, startAngle: .degrees(40), endAngle: .degrees(300), clockwise: false)
+            path.addArc(center: CGPoint(x: origin.x + 10, y: origin.y - 8 + wag * 0.15), radius: size.width * 0.08, startAngle: .degrees(40 + wag), endAngle: .degrees(300 + wag), clockwise: false)
         case .fluffy:
-            path.addEllipse(in: CGRect(x: origin.x - 4, y: origin.y - size.height * 0.12, width: size.width * 0.14, height: size.height * 0.22))
+            path.addEllipse(in: CGRect(x: origin.x - 4, y: origin.y - size.height * 0.12 + wag * 0.2, width: size.width * 0.14, height: size.height * 0.22))
         case .longCurve:
             path.move(to: origin)
             path.addQuadCurve(
-                to: CGPoint(x: origin.x + size.width * 0.18, y: origin.y - size.height * 0.22),
-                control: CGPoint(x: origin.x + size.width * 0.22, y: origin.y + 8)
+                to: CGPoint(x: origin.x + size.width * 0.18, y: origin.y - size.height * 0.22 + wag * 0.4),
+                control: CGPoint(x: origin.x + size.width * 0.22 + wag * 0.35, y: origin.y + 8)
             )
         }
         let style = StrokeStyle(lineWidth: character.tail == .longCurve || character.tail == .curled ? size.width * 0.055 : 0, lineCap: .round)
@@ -95,8 +97,13 @@ struct PetIllustration: View {
 
     private func drawEars(context: inout GraphicsContext, size: CGSize, headCenter: CGPoint, headR: CGFloat) {
         let earOffsets: [(CGFloat, CGFloat)] = [(-0.72, -0.78), (0.62, -0.82)]
+        let flick = pose.earFlick
         for (i, offset) in earOffsets.enumerated() {
-            let origin = CGPoint(x: headCenter.x + headR * offset.0, y: headCenter.y + headR * offset.1)
+            let tilt = i == 0 ? -flick : flick
+            let origin = CGPoint(
+                x: headCenter.x + headR * offset.0 + tilt * 0.25,
+                y: headCenter.y + headR * offset.1 + abs(tilt) * 0.08
+            )
             var path = Path()
             switch character.ear {
             case .triangle:
@@ -117,19 +124,23 @@ struct PetIllustration: View {
     }
 
     private func drawFace(context: inout GraphicsContext, size: CGSize, headCenter: CGPoint, headR: CGFloat) {
+        let combinedLook = CGSize(
+            width: lookOffset.width + pose.lookOffset.width,
+            height: lookOffset.height + pose.lookOffset.height
+        )
         let eyeY = headCenter.y - headR * 0.08
         let eyeW = headR * 0.28
-        let eyeH = headR * 0.32
+        let eyeH = headR * 0.32 * (1 - pose.eyeClose * 0.92)
         let left = CGPoint(x: headCenter.x - headR * 0.32, y: eyeY)
         let right = CGPoint(x: headCenter.x + headR * 0.28, y: eyeY)
         for center in [left, right] {
             let white = CGRect(x: center.x - eyeW / 2, y: center.y - eyeH / 2, width: eyeW, height: eyeH)
             context.fill(Path(ellipseIn: white), with: .color(.white))
             let pupil = CGRect(
-                x: center.x - eyeW * 0.22 + lookOffset.width,
-                y: center.y - eyeH * 0.18 + lookOffset.height,
+                x: center.x - eyeW * 0.22 + combinedLook.width,
+                y: center.y - eyeH * 0.18 + combinedLook.height,
                 width: eyeW * 0.46,
-                height: eyeH * 0.55
+                height: max(eyeH * 0.55, 1)
             )
             context.fill(Path(ellipseIn: pupil), with: .color(character.eye.color))
             context.fill(

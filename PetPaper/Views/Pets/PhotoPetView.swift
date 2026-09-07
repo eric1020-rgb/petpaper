@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct PhotoPetView: View {
     let cutout: PhotoPetCutout
@@ -36,13 +37,15 @@ struct PetLayerView: View {
     var photoPet: PhotoPetCutout?
     var lookOffset: CGSize = .zero
     var lean: Double = 0
+    var pose: IdlePose = .rest
 
     var body: some View {
         if let photoPet {
             PhotoPetView(cutout: photoPet)
-                .rotationEffect(.degrees(lean))
+                .rotationEffect(.degrees(lean + pose.lean))
+                .scaleEffect(x: 1, y: pose.bodySquash)
         } else {
-            PetIllustration(character: character, lookOffset: lookOffset, lean: lean)
+            PetIllustration(character: character, lookOffset: lookOffset, lean: lean, pose: pose)
         }
     }
 }

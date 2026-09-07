@@ -8,7 +8,8 @@ This Linux environment cannot run the iOS Simulator. Findings below are from wal
 2. **Template → editor** — Home grid `openEditor` restores the last illustrated pet (UserDefaults) and marks the last template. Pet / stickers / colors / text sheets, Follow, undo/reset, Save → `WallpaperExporter`.
 3. **用我嘅相** — Caption under the card (including empty Photos). `PhotosPicker` → ImageIO downsample → Vision lift → multi-subject choose → refine (with cutout tips) → confirm → editor with `pendingPhotoPet`.
 4. **Replay tutorial** — Home card `replayTutorial()`. Swipe-down is allowed only after the tutorial has been completed once. Replay seeds template/pet from last-used picks.
-5. **Edges** — denied add-only Photos, Vision `noSubject`, empty picker load, cancel mid-analyze, Follow vs pinch, Follow off disables trail, pop editor drops pending cutout, missing string keys.
+5. **Idle activities** — Home idle card + editor tray + **桌面寵物** widget. Weighted `PetIdleAction` (fly-out **2%**). Demo interval and **預覽動作**. WidgetKit timeline on the Home Screen; static Photos wallpaper cannot animate.
+6. **Edges** — denied add-only Photos, Vision `noSubject`, empty picker load, cancel mid-analyze, Follow vs pinch, Follow off disables trail, pop editor drops pending cutout, missing string keys.
 
 ## P2 polish (implemented)
 
@@ -62,11 +63,37 @@ Skip vs Finish landing, single `AppCover`, Follow vs pinch, Follow undo, Vision 
 - Persist a richer editor draft (stickers / overlay text / photo cutout on disk). Currently only last template + last illustrated pet.
 - Re-refine a confirmed photo pet from the editor (the downscaled `original` is kept for that).
 - In-app “set wallpaper” deep link is not possible; keep the post-save Photos instructions.
+- iOS Home/Lock Screen Photos wallpapers cannot animate. Use the **桌面寵物** Home Screen widget for live idle poses. Do not block on Live Wallpaper export.
+
+## Idle activities + Home Screen widget (this pass)
+
+In-app preview (editor canvas / home cards) plus a WidgetKit extension **桌面寵物**. `PetIdleAction` tickets `0..<100`, **flyOutDoor = 98–99 (exactly 2%)**. App Group `group.com.eric1020.petpaper` shares interval, idle on/off, last pet/template, and an optional photo-cutout PNG.
+
+| Surface | How motion works |
+| --- | --- |
+| In-app | `PetIdleDirector` timer + temporary transforms |
+| Home Screen | WidgetKit timeline entries (pose frames). Fly-out = leave → empty/sparkle → return |
+| Photos wallpaper | Still image only. Optional background behind the widget |
+
+### Device / Simulator test plan
+
+**In-app (unchanged)**  
+1. Idle card toggle, **預覽（8 秒）**, **預覽動作**, Follow pause, drag cancel, photo subset, toast, persistence.
+
+**Home Screen widget**  
+2. Run **PetPaper** (embeds the widget). Home Screen → long-press → Add Widget → PetPaper → **桌面寵物**. Small and medium families.  
+3. Optional: scheme **PetPaperWidget** with `_XCWidgetKind=DesktopPetWidget` to preview on Simulator SpringBoard.  
+4. Set interval to **Demo** in the app (跟隨 App) or in widget Edit Widget. Within about 20s the pet should change pose. Fly-out is rare (~2%): portal, pet leaves, empty sparkle, return.  
+5. Edit Widget: pick a catalog pet, a template tint, idle off (stays at rest), idle on again.  
+6. Confirm a photo cutout in the app, set widget pet to **我的去背寵物** (or 跟隨 App while using a photo pet). Widget shows the snapshot.  
+7. Tap widget: app opens editor (`petpaper://editor`).  
+8. Lock the device / wait: updates may be delayed or coalesced. Documented; 2h is best-effort.  
+9. Save wallpaper during in-app idle: still resting pose. Widget is independent of the export.
 
 ## Localization
 
-New keys (zh-Hant + en): `home.upload.emptyTip`, `home.lastUsed`, `import.preview.tipsTitle`, `import.preview.tip.contrast`, `import.preview.tip.frame`, `import.preview.tip.group`, `a11y.trail.disabled`.
+New keys (zh-Hant + en): … idle.*, `editor.tool.idle`, `widget.displayName`, `widget.description`, `widget.pet*`, `widget.template*`, `widget.interval.appSetting`, `widget.idle.appSetting`, `widget.install.*`.
 
-Updated: `export.success.message`, `a11y.trail.hint`.
+Updated: `idle.wallpaperNote`.
 
-UserDefaults keys: `petpaper.hasCompletedTutorial`, `petpaper.lastTemplate`, `petpaper.lastPetID` (privacy manifest reason **CA92.1**).
+UserDefaults / App Group keys: `petpaper.hasCompletedTutorial`, `petpaper.lastTemplate`, `petpaper.lastPetID`, `petpaper.idleEnabled`, `petpaper.idleInterval`, `petpaper.idleToast`, `petpaper.usesPhotoPet` (privacy manifest reason **CA92.1**). App Group `group.com.eric1020.petpaper`.

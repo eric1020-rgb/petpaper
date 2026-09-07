@@ -10,10 +10,11 @@ struct WallpaperCanvasView: View {
     @State private var rotateBase: Double?
 
     var body: some View {
+        let pose = store.idle.pose
         GeometryReader { geo in
             let size = geo.size
             let layoutScale = max(size.width / 390, 0.4)
-            canvasStack(in: size, layoutScale: layoutScale)
+            canvasStack(in: size, layoutScale: layoutScale, pose: pose)
                 .contentShape(Rectangle())
                 .applyCanvasGestures(
                     isInteractive: isInteractive,
@@ -36,7 +37,7 @@ struct WallpaperCanvasView: View {
     }
 
     @ViewBuilder
-    private func canvasStack(in size: CGSize, layoutScale: CGFloat) -> some View {
+    private func canvasStack(in size: CGSize, layoutScale: CGFloat, pose: IdlePose) -> some View {
         ZStack {
             TemplateSceneView(
                 template: store.state.template,
@@ -50,7 +51,18 @@ struct WallpaperCanvasView: View {
                 stickerView(sticker, in: size, layoutScale: layoutScale)
             }
 
+            IdlePortalOverlay(progress: pose.portalVisible, in: size)
+
             petView(in: size, layoutScale: layoutScale)
+
+            IdleSparkleOverlay(
+                amount: pose.sparkleAmount,
+                in: size,
+                around: CGPoint(
+                    x: visualPetPosition.x * size.width,
+                    y: visualPetPosition.y * size.height
+                )
+            )
 
             if !store.state.overlayText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 textView(in: size, layoutScale: layoutScale)
@@ -87,21 +99,31 @@ struct WallpaperCanvasView: View {
         .allowsHitTesting(false)
     }
 
+    private var visualPetPosition: CGPoint {
+        CGPoint(
+            x: store.state.petPosition.x + store.idle.pose.positionDelta.x,
+            y: store.state.petPosition.y + store.idle.pose.positionDelta.y
+        )
+    }
+
     private func petView(in size: CGSize, layoutScale: CGFloat) -> some View {
         let selected = showsSelection && store.selection == .pet && isInteractive && !store.state.followMode
         let usesPhoto = store.state.usesPhotoPet && store.photoPet != nil
+        let pose = store.idle.pose
         return PetLayerView(
             character: store.pet,
             photoPet: usesPhoto ? store.photoPet : nil,
             lookOffset: store.lookOffset,
-            lean: store.lean + store.state.petRotation * 0.15
+            lean: store.lean + store.state.petRotation * 0.15,
+            pose: pose
         )
         .frame(
             width: (usesPhoto ? 210 : 170) * layoutScale,
             height: (usesPhoto ? 230 : 190) * layoutScale
         )
-        .scaleEffect(store.state.petScale)
-        .rotationEffect(.degrees(store.state.petRotation))
+        .scaleEffect(store.state.petScale * pose.extraScale)
+        .rotationEffect(.degrees(store.state.petRotation + pose.extraRotation))
+        .opacity(pose.opacity)
         .padding(10)
         .overlay {
             if selected {
@@ -109,7 +131,7 @@ struct WallpaperCanvasView: View {
                     .strokeBorder(Color.white.opacity(0.9), style: StrokeStyle(lineWidth: 2, dash: [7, 5]))
             }
         }
-        .position(x: store.state.petPosition.x * size.width, y: store.state.petPosition.y * size.height)
+        .position(x: visualPetPosition.x * size.width, y: visualPetPosition.y * size.height)
         .allowsHitTesting(canTransform)
         .onTapGesture {
             store.selection = .pet
@@ -168,6 +190,9 @@ struct WallpaperCanvasView: View {
                 }
                 if lastDrag == .zero {
                     store.pushUndo()
+                    if store.selection == .pet {
+                        store.cancelIdleForUserDrag()
+                    }
                 }
                 let delta = CGSize(
                     width: value.translation.width - lastDrag.width,

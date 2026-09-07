@@ -8,6 +8,9 @@ struct PetPaperApp: App {
         WindowGroup {
             RootView(session: session)
                 .environment(session)
+                .onOpenURL { url in
+                    session.handleDeepLink(url)
+                }
         }
     }
 }

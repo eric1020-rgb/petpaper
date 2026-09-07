@@ -2363,6 +2363,635 @@
           }
         }
       }
+    },
+    "idle.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle activities"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閒置動作"
+          }
+        }
+      }
+    },
+    "idle.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your pet moves on its own now and then (about every 2 hours by default)."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "寵物會不時自己動一動（預設約每兩小時一次）。"
+          }
+        }
+      }
+    },
+    "idle.enabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle activities"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟閒置動作"
+          }
+        }
+      }
+    },
+    "idle.interval": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interval"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "間隔"
+          }
+        }
+      }
+    },
+    "idle.interval.thirtyMinutes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 minutes"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 分鐘"
+          }
+        }
+      }
+    },
+    "idle.interval.oneHour": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 hour"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 小時"
+          }
+        }
+      }
+    },
+    "idle.interval.twoHours": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 hours"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 小時"
+          }
+        }
+      }
+    },
+    "idle.interval.fourHours": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 hours"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 小時"
+          }
+        }
+      }
+    },
+    "idle.interval.demo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demo (8 seconds)"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預覽（8 秒）"
+          }
+        }
+      }
+    },
+    "idle.preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preview action"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預覽動作"
+          }
+        }
+      }
+    },
+    "idle.toast": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show action name"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "顯示動作名稱"
+          }
+        }
+      }
+    },
+    "idle.wallpaperNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A Photos wallpaper on the Home or Lock Screen stays still. For a pet that moves on the Home Screen, add the 桌面寵物 widget. Export is still a still image you can place behind the widget."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主畫面／鎖定畫面的照片壁紙仍是靜態。要讓寵物在主畫面動，請加入「桌面寵物」小工具。匯出仍是靜態圖片，可放在小工具後面當背景。"
+          }
+        }
+      }
+    },
+    "idle.followPaused": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle pauses while Follow is on, and cancels if you drag the pet."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「跟著走」期間會暫停閒置動作；拖曳寵物會取消目前動作。"
+          }
+        }
+      }
+    },
+    "idle.action.blinkBreathe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blink & breathe"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "眨眼呼吸"
+          }
+        }
+      }
+    },
+    "idle.action.lookAround": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Look around"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "東張西望"
+          }
+        }
+      }
+    },
+    "idle.action.earTailFlick": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ear & tail flick"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "耳朵／尾巴輕彈"
+          }
+        }
+      }
+    },
+    "idle.action.yawnStretch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yawn & stretch"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打哈欠伸懶腰"
+          }
+        }
+      }
+    },
+    "idle.action.bellyRoll": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belly roll"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "翻肚"
+          }
+        }
+      }
+    },
+    "idle.action.scratch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scratch"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "抓癢"
+          }
+        }
+      }
+    },
+    "idle.action.sleepCurl": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep curl"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "蜷起來睡"
+          }
+        }
+      }
+    },
+    "idle.action.zoomies": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoomies"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "瞬間爆發"
+          }
+        }
+      }
+    },
+    "idle.action.flyOutDoor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fly out the door"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛天出門"
+          }
+        }
+      }
+    },
+    "a11y.idle.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When on, the pet plays a random idle activity on the chosen interval."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟後，寵物會按你選的間隔隨機做閒置動作。"
+          }
+        }
+      }
+    },
+    "a11y.idle.preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play one random idle activity now. Fly out the door is still 2% of rolls."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即隨機播放一個閒置動作。「飛天出門」仍然佔 2%。"
+          }
+        }
+      }
+    },
+    "editor.tool.idle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閒置"
+          }
+        }
+      }
+    },
+    "widget.displayName": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desktop Pet"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "桌面寵物"
+          }
+        }
+      }
+    },
+    "widget.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An idle pet on the Home Screen. Tap to open the editor."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把會動的寵物放上主畫面。點一下可打開編輯器。"
+          }
+        }
+      }
+    },
+    "widget.pet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pet"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "寵物"
+          }
+        }
+      }
+    },
+    "widget.pet.appSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use app setting"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟隨 App"
+          }
+        }
+      }
+    },
+    "widget.pet.photoCutout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My photo pet"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我的去背寵物"
+          }
+        }
+      }
+    },
+    "widget.template": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "背景"
+          }
+        }
+      }
+    },
+    "widget.template.appSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use app setting"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟隨 App"
+          }
+        }
+      }
+    },
+    "widget.interval.appSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use app setting"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟隨 App"
+          }
+        }
+      }
+    },
+    "widget.idle.appSetting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use app setting"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟隨 App"
+          }
+        }
+      }
+    },
+    "widget.install.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home Screen widget"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主畫面小工具"
+          }
+        }
+      }
+    },
+    "widget.install.steps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple does not allow third-party live wallpapers. Add the PetPaper widget: long-press the Home Screen → Edit → Add Widget → PetPaper → 桌面寵物. Optionally set your exported still image as the wallpaper behind it."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple 不容許第三方動態壁紙。請把寵物放到主畫面：長按主畫面 → 編輯 → 加入小工具 → 寵物壁紙 → 桌面寵物。也可把匯出的靜態壁紙設成小工具後面的背景。"
+          }
+        }
+      }
+    },
+    "widget.install.limitation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WidgetKit may coalesce updates while the device is locked or the app is suspended, so a 2-hour cadence is best-effort. Use Demo (8s / ~20s on the widget) in Simulator to see pose changes sooner."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "系統可能合併更新（鎖定或 App 被暫停時），兩小時一次只是盡力而為。模擬器請用「預覽（8 秒）」；小工具大約每 20 秒換一個姿勢，較容易看到動作。"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
